@@ -35,10 +35,9 @@ const CONFIG = {
 
   // ── 파일명 ─────────────────────────────────────────
   로딩영상: "opening.mp4",
-  로딩사진: "loader.jpg",
   커버사진: "cover.jpg",
 
-  // 갤러리: 파일 업로드 후 주석(//) 제거
+  // 갤러리: 파일 추가 시 아래에 이어서 주석(//) 제거
   갤러리사진: [
     "gallery01.jpg",
     "gallery02.jpg",
@@ -81,7 +80,7 @@ const CONFIG = {
     { 이름:"염은숙", 은행:"국민은행",  번호:"047-24-0283-569" },
   ],
   신부계좌: [
-    { 이름:"박수진", 은행:"카카오뱅크", 번호:"3333-05-8606948" },
+    { 이름:"박수진", 은행:"토스뱅크", 번호:"1000-9376-8558" },
   ],
 
   공유주소:"https://rudxo0507-ops.github.io/wedding/",
@@ -112,13 +111,6 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 }
 .로딩-그라데이션{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.05),rgba(0,0,0,.55));z-index:1}
 .로딩-오버레이{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
-.로딩-사진-링{position:relative;width:120px;height:120px;margin-bottom:22px}
-.로딩-사진-링::after{
-  content:'';position:absolute;inset:-4px;border-radius:50%;
-  border:1px solid transparent;border-top-color:rgba(255,255,255,.7);
-  animation:링회전 1.6s ease-in-out infinite;
-}
-.로딩-사진{width:120px;height:120px;border-radius:50%;object-fit:cover;object-position:center top;display:block;border:1px solid rgba(255,255,255,.2)}
 .로딩-이름{font-size:17px;font-weight:300;color:rgba(255,255,255,.9);letter-spacing:.12em;margin-bottom:7px;animation:숨쉬기 2s ease-in-out infinite}
 .로딩-날짜{font-size:12px;font-weight:300;color:rgba(255,255,255,.5);letter-spacing:.1em;margin-bottom:26px}
 .로딩-바-감싸기{width:60px;height:1px;background:rgba(255,255,255,.2);position:relative;overflow:hidden;margin-bottom:10px}
@@ -127,17 +119,19 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 
 /* 건너뛰기 버튼 */
 #건너뛰기{
-  position:absolute;bottom:36px;right:24px;z-index:3;
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:3;
   font-family:'Noto Serif KR',serif;font-size:11px;font-weight:300;
-  color:rgba(255,255,255,.45);letter-spacing:.1em;
-  background:transparent;border:.5px solid rgba(255,255,255,.25);
-  border-radius:2px;padding:7px 14px;cursor:pointer;
-  transition:opacity .2s;display:none;
+  color:rgba(255,255,255,.5);letter-spacing:.12em;
+  background:transparent;border:.5px solid rgba(255,255,255,.3);
+  border-radius:2px;padding:8px 24px;cursor:pointer;
+  opacity:0;visibility:hidden;
+  transition:opacity .5s ease,visibility .5s ease;
   -webkit-tap-highlight-color:transparent;
+  white-space:nowrap;
 }
-#건너뛰기:active{opacity:.6}
+#건너뛰기.보임{opacity:1;visibility:visible}
+#건너뛰기:active{opacity:.5}
 
-@keyframes 링회전{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes 숨쉬기{0%,100%{opacity:.5}50%{opacity:1}}
 @keyframes 바슬라이드{0%{left:-100%}100%{left:100%}}
 
@@ -309,9 +303,6 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
   <video id="로딩-비디오" muted playsinline preload="auto" loop></video>
   <div class="로딩-그라데이션"></div>
   <div class="로딩-오버레이">
-    <div class="로딩-사진-링">
-      <img id="로딩-사진" class="로딩-사진" src="" alt="">
-    </div>
     <div class="로딩-이름">고경환 ♥ 박수진</div>
     <div class="로딩-날짜">2026년 10월 17일</div>
     <div class="로딩-바-감싸기"><div class="로딩-바"></div></div>
@@ -509,7 +500,6 @@ function 설정적용() {
 
   // 파일 경로
   $('로딩-비디오').src  = C.로딩영상;
-  $('로딩-사진').src    = C.로딩사진;
   $('커버-이미지').src  = C.커버사진;
   $('지도-약도').src    = C.약도이미지;
 
@@ -639,8 +629,8 @@ function 로딩종료() {
   비디오.addEventListener('loadedmetadata', () => {
     비디오.loop = false;          // 한 번만 재생
     비디오.play().catch(() => {});
-    // 2초 후 건너뛰기 버튼 표시
-    setTimeout(() => { 건너뛰기.style.display = 'block'; }, 2000);
+    // 4초 후 건너뛰기 버튼 표시
+    setTimeout(() => { 건너뛰기.classList.add('보임'); }, 4000);
   });
 
   // 동영상 재생 완료 → 자동 종료
