@@ -31,7 +31,7 @@ const CONFIG = {
   주소상세:"기흥ICT밸리 A동 로비",
   예식일시:"2026-10-17T11:00:00",
 
-  인사말:`서로를 바라보며 함께 걸어온 시간이<br>이제 하나의 길이 되었습니다.<br><br>두 사람이 사랑을 약속하는 날,<br>소중한 분들과 그 기쁨을 나누고 싶습니다.<br><br>바쁘신 중에도 오셔서<br>따뜻한 축복을 건네주시면<br>더없는 기쁨이 되겠습니다.`,
+  인사말:`문득 아름다운 것과 마주쳤을 때<br>지금 곁에 있으면 얼마나 좋을까 하고<br>떠오르는 얼굴이 있다면<br>그대는 사랑하고 있는 것이다.<br><br><span style="font-size:.9em;opacity:.7">— 이문재, 농담</span><br><br>맛있는 것을 먹고 좋은 풍경을 볼 때면<br>서로가 가장 먼저 생각나는 사람이 되었습니다.<br><br>혼자 걷던 길의 작은 즐거움들을<br>이제 둘이 함께 나누려 합니다.<br><br>저희 두 사람의 다정한 일상이 시작되는 날,<br>귀한 걸음 하시어 축복해 주시면 감사하겠습니다.`,
 
   // ── 파일명 ─────────────────────────────────────────
   로딩영상: "opening.mp4",
@@ -92,8 +92,8 @@ const CONFIG = {
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --아이보리:#F5F2EC;--아이보리2:#E9E3D8;--샌드:#D4C9B6;
-  --탄:#9E8E78;--웜:#5C4E3C;--바크:#332618;--잉크:#160E04;
+  --아이보리:#FAFAF7;--아이보리2:#F2F0EA;--샌드:#E2DDD4;
+  --탄:#B8AFA0;--웜:#8C7F72;--바크:#5A4E42;--잉크:#2E2620;
 }
 html{overflow:hidden;height:100%}
 body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-webkit-font-smoothing:antialiased;overflow:hidden}
@@ -181,29 +181,74 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 .인사말-본문{font-size:14px;font-weight:300;color:var(--바크);line-height:2.5;letter-spacing:.05em;word-break:keep-all;text-align:center;margin-bottom:24px}
 .인사말-서명{font-size:13px;font-weight:300;color:var(--웜);letter-spacing:.06em;text-align:center}
 
-/* ══ 3. 갤러리 ══ */
-.갤러리-페이지{background:#000;display:flex;flex-direction:column}
-.갤러리-외부{flex:1;position:relative;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.갤러리-트랙{height:100%;width:100%;overflow:hidden}
-.갤러리-내부{display:flex;height:100%;transition:transform .42s cubic-bezier(.4,0,.2,1);will-change:transform}
-.갤러리-슬라이드{flex:0 0 100%;height:100%;overflow:hidden}
-.갤러리-슬라이드 img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;user-select:none;-webkit-user-select:none;touch-action:none}
-.갤러리-화살표{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.3);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;-webkit-tap-highlight-color:transparent;outline:none}
-.갤러리-화살표:active{background:rgba(0,0,0,.5)}
-.갤러리-화살표-좌{left:10px}.갤러리-화살표-우{right:10px}
-.갤러리-하단{padding:14px 0 18px;display:flex;flex-direction:column;align-items:center;gap:8px;background:#000;flex-shrink:0}
-.갤러리-점{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:220px}
-.갤러리-점-항목{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.25);transition:background .25s,transform .25s;cursor:pointer;flex-shrink:0}
-.갤러리-점-항목.활성{background:rgba(255,255,255,.85);transform:scale(1.35)}
-.갤러리-카운터{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.1em}
+/* ══ 3. 갤러리 — 바둑판 + 라이트박스 ══ */
+.갤러리-페이지{background:var(--아이보리);display:flex;flex-direction:column;overflow:hidden}
+.갤러리-그리드-감싸기{flex:1;overflow-y:auto;scrollbar-width:none;padding:2px}
+.갤러리-그리드-감싸기::-webkit-scrollbar{display:none}
+.갤러리-그리드{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.갤러리-썸네일{aspect-ratio:1;overflow:hidden;cursor:pointer;background:var(--아이보리2)}
+.갤러리-썸네일 img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s;-webkit-user-drag:none;pointer-events:none}
+.갤러리-썸네일:active img{opacity:.8}
+
+/* 라이트박스 */
+#라이트박스{
+  position:fixed;inset:0;z-index:8888;
+  background:rgba(0,0,0,.95);
+  display:none;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+#라이트박스.열림{display:flex}
+.라이트박스-닫기{
+  position:absolute;top:16px;right:18px;z-index:2;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,.15);border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.라이트박스-이미지-감싸기{
+  width:100%;flex:1;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;
+}
+.라이트박스-내부{
+  display:flex;height:100%;width:100%;
+  transition:transform .38s cubic-bezier(.4,0,.2,1);
+  will-change:transform;
+}
+.라이트박스-슬라이드{
+  flex:0 0 100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  padding:8px;
+}
+.라이트박스-슬라이드 img{
+  max-width:100%;max-height:100%;
+  object-fit:contain;display:block;
+  border-radius:2px;
+  pointer-events:none;-webkit-user-drag:none;
+}
+.라이트박스-화살표{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,.15);border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:2;-webkit-tap-highlight-color:transparent;outline:none;
+}
+.라이트박스-화살표:active{background:rgba(255,255,255,.3)}
+.라이트박스-화살표-좌{left:8px}
+.라이트박스-화살표-우{right:8px}
+.라이트박스-카운터{
+  font-family:'Noto Serif KR',serif;
+  font-size:12px;font-weight:300;
+  color:rgba(255,255,255,.45);letter-spacing:.1em;
+  padding:12px 0 20px;flex-shrink:0;
+}
 
 /* ══ 4. 디데이 ══ */
-.디데이-페이지{background:var(--바크);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 32px}
-.디데이-숫자{font-family:'Cormorant Garamond',serif;font-size:80px;font-weight:300;color:var(--아이보리);line-height:1}
-.디데이-라벨{font-size:13px;font-weight:300;letter-spacing:.18em;color:rgba(245,242,236,.55);margin-top:12px}
-.디데이-날짜{font-size:14px;font-weight:300;color:rgba(245,242,236,.8);margin-top:10px;letter-spacing:.04em}
-.디데이-구분선{width:36px;height:.5px;background:rgba(245,242,236,.2);margin:24px 0}
-.디데이-장소{font-size:13px;font-weight:300;color:rgba(245,242,236,.6);letter-spacing:.04em;text-align:center;line-height:1.9}
+.디데이-페이지{background:#EDE8E0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 32px}
+.디데이-숫자{font-family:'Cormorant Garamond',serif;font-size:80px;font-weight:300;color:var(--잉크);line-height:1}
+.디데이-라벨{font-size:13px;font-weight:300;letter-spacing:.18em;color:var(--웜);margin-top:12px}
+.디데이-날짜{font-size:14px;font-weight:300;color:var(--바크);margin-top:10px;letter-spacing:.04em}
+.디데이-구분선{width:36px;height:.5px;background:var(--샌드);margin:24px 0}
+.디데이-장소{font-size:13px;font-weight:300;color:var(--웜);letter-spacing:.04em;text-align:center;line-height:1.9}
 
 /* ══ 5. 오시는 길 ══ */
 .지도-페이지{background:var(--아이보리);display:flex;flex-direction:column}
@@ -282,10 +327,14 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 .계좌-복사{flex-shrink:0;font-size:11px;font-weight:300;padding:7px 12px;border:.5px solid var(--탄);border-radius:2px;background:transparent;color:var(--바크);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
 .계좌-복사:active{background:var(--샌드)}
 
-/* ══ 8. 푸터 ══ */
-.푸터-페이지{background:var(--바크);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
-.푸터-이름{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;font-weight:400;color:var(--아이보리);letter-spacing:.1em}
-.푸터-날짜{font-size:13px;font-weight:300;color:rgba(245,242,236,.5);letter-spacing:.1em}
+/* ══ 8. 공유+푸터 마지막 페이지 ══ */
+.공유-마지막-페이지{background:var(--아이보리2);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.공유-마지막-내용{display:flex;flex-direction:column;align-items:center;width:100%;padding:0 28px;gap:0}
+.공유-마지막-내용 .푸터-이름{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;font-weight:400;color:var(--바크);letter-spacing:.1em;margin-bottom:6px}
+.공유-마지막-내용 .푸터-날짜{font-size:13px;font-weight:300;color:var(--웜);letter-spacing:.1em;margin-bottom:0}
+.공유-마지막-내용 .공유-구분{width:100%;height:.5px;background:var(--샌드);margin:28px 0 20px}
+.공유-마지막-내용 .공유-소제목{font-size:11px;font-weight:400;letter-spacing:.2em;color:var(--웜);margin-bottom:16px}
+.공유-마지막-내용 .공유-버튼-행{display:flex;gap:8px;width:100%}
 
 /* 토스트 */
 .토스트{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--바크);color:var(--아이보리);font-size:13px;font-weight:300;padding:11px 22px;border-radius:2px;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;z-index:9999}
@@ -347,22 +396,27 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 
   <!-- 3. 갤러리 -->
   <section class="페이지-섹션 갤러리-페이지">
-    <div class="갤러리-외부" id="갤러리외부">
-      <div class="갤러리-트랙">
-        <div class="갤러리-내부" id="갤러리내부"></div>
-      </div>
-      <button class="갤러리-화살표 갤러리-화살표-좌" id="이전버튼" aria-label="이전">
+    <div class="갤러리-그리드-감싸기">
+      <div class="갤러리-그리드" id="갤러리그리드"></div>
+    </div>
+  </section>
+
+  <!-- 라이트박스 (전체화면 오버레이) -->
+  <div id="라이트박스">
+    <button class="라이트박스-닫기" onclick="라이트박스닫기()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <div class="라이트박스-이미지-감싸기" id="라이트박스감싸기">
+      <div class="라이트박스-내부" id="라이트박스내부"></div>
+      <button class="라이트박스-화살표 라이트박스-화살표-좌" onclick="라이트박스이동(라이트박스현재-1)">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <button class="갤러리-화살표 갤러리-화살표-우" id="다음버튼" aria-label="다음">
+      <button class="라이트박스-화살표 라이트박스-화살표-우" onclick="라이트박스이동(라이트박스현재+1)">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
     </div>
-    <div class="갤러리-하단">
-      <div class="갤러리-점" id="갤러리점"></div>
-      <div class="갤러리-카운터" id="갤러리카운터"></div>
-    </div>
-  </section>
+    <div class="라이트박스-카운터" id="라이트박스카운터"></div>
+  </div>
 
   <!-- 4. 디데이 -->
   <section class="페이지-섹션 디데이-페이지">
@@ -461,8 +515,20 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
       </div>
     </div>
 
-    <!-- 공유 + 계좌 — 교통 페이지 하단 통합 -->
+    <!-- 계좌만 교통 하단에 -->
     <div class="공유-하단">
+      <p class="계좌-소제목">마음 전하기</p>
+      <p class="계좌-부제">축하와 격려에 깊이 감사드립니다</p>
+      <div class="계좌-아코디언" id="계좌아코디언"></div>
+    </div>
+  </section>
+
+  <!-- 7. 공유 + 푸터 -->
+  <section class="페이지-섹션 공유-마지막-페이지">
+    <div class="공유-마지막-내용">
+      <div class="푸터-이름">Kyunghwan &amp; Sujin</div>
+      <div class="푸터-날짜">2026년 10월 17일 토요일</div>
+      <div class="공유-구분"></div>
       <p class="공유-소제목">청첩장 공유</p>
       <div class="공유-버튼-행">
         <button class="공유-버튼 카카오" onclick="카카오공유()">
@@ -478,17 +544,7 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
           더보기
         </button>
       </div>
-      <div class="공유-구분"></div>
-      <p class="계좌-소제목">마음 전하기</p>
-      <p class="계좌-부제">축하와 격려에 깊이 감사드립니다</p>
-      <div class="계좌-아코디언" id="계좌아코디언"></div>
     </div>
-  </section>
-
-  <!-- 7. 푸터 -->
-  <section class="페이지-섹션 푸터-페이지">
-    <div class="푸터-이름">Kyunghwan &amp; Sujin</div>
-    <div class="푸터-날짜">2026년 10월 17일 토요일</div>
   </section>
 
 </div>
@@ -510,7 +566,7 @@ function 설정적용() {
   $('신랑혼주').textContent   = C.신랑혼주;
   $('신부혼주').textContent   = C.신부혼주;
   $('인사말본문').innerHTML   = C.인사말;
-  $('인사말서명').textContent = C.신랑 + ' · ' + C.신부 + ' 드림';
+  $('인사말서명').textContent = C.신랑 + '·' + C.신부 + ' 올림';
   $('지도예식장').textContent = C.예식장 + ' · ' + C.홀;
   $('지도주소').innerHTML     = C.주소 + '<br>' + C.주소상세;
   $('디데이날짜').textContent = C.날짜전체 + ' ' + C.시간;
@@ -523,8 +579,9 @@ function 설정적용() {
   계좌렌더(C);
 }
 
-/* ── 갤러리 ── */
-let 현재 = 0, 전체 = 0;
+/* ── 갤러리 — 바둑판 + 라이트박스 + 랜덤 순서 ── */
+let 갤러리목록 = [];
+let 라이트박스현재 = 0;
 
 function 갤러리초기화(파일목록) {
   let 확인 = 0;
@@ -538,39 +595,76 @@ function 갤러리초기화(파일목록) {
   });
 }
 
-function 갤러리빌드(목록) {
-  전체 = 목록.length;
-  const 내부 = document.getElementById('갤러리내부');
-  const 점   = document.getElementById('갤러리점');
-  const 카운터 = document.getElementById('갤러리카운터');
-  내부.innerHTML   = 목록.map((src, i) => `<div class="갤러리-슬라이드"><img src="${src}" alt="사진 ${i+1}" draggable="false" oncontextmenu="return false"></div>`).join('');
-  점.innerHTML     = 목록.map((_, i) => `<div class="갤러리-점-항목${i===0?' 활성':''}" onclick="슬라이드이동(${i})"></div>`).join('');
-  카운터.textContent = 전체 > 0 ? `1 / ${전체}` : '';
+function 랜덤섞기(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
-function 슬라이드이동(i) {
-  현재 = (i + 전체) % 전체;
-  document.getElementById('갤러리내부').style.transform = `translateX(-${현재*100}%)`;
-  document.querySelectorAll('.갤러리-점-항목').forEach((d, j) => d.classList.toggle('활성', j === 현재));
-  document.getElementById('갤러리카운터').textContent = `${현재+1} / ${전체}`;
+function 갤러리빌드(목록) {
+  갤러리목록 = 랜덤섞기(목록);  // 랜덤 순서
+  const 그리드 = document.getElementById('갤러리그리드');
+  그리드.innerHTML = 갤러리목록.map((src, i) => `
+    <div class="갤러리-썸네일" onclick="라이트박스열기(${i})">
+      <img src="${src}" alt="사진 ${i+1}" loading="lazy">
+    </div>`).join('');
+
+  // 라이트박스 슬라이드 미리 생성
+  const lb내부 = document.getElementById('라이트박스내부');
+  lb내부.innerHTML = 갤러리목록.map((src, i) => `
+    <div class="라이트박스-슬라이드">
+      <img src="${src}" alt="사진 ${i+1}">
+    </div>`).join('');
 }
-document.getElementById('이전버튼').onclick = () => 슬라이드이동(현재 - 1);
-document.getElementById('다음버튼').onclick = () => 슬라이드이동(현재 + 1);
+
+function 라이트박스열기(idx) {
+  라이트박스현재 = idx;
+  document.getElementById('라이트박스').classList.add('열림');
+  document.body.style.overflow = 'hidden';
+  라이트박스위치업데이트(false);
+}
+
+function 라이트박스닫기() {
+  document.getElementById('라이트박스').classList.remove('열림');
+  document.body.style.overflow = '';
+}
+
+function 라이트박스이동(i) {
+  라이트박스현재 = (i + 갤러리목록.length) % 갤러리목록.length;
+  라이트박스위치업데이트(true);
+}
+
+function 라이트박스위치업데이트(애니메이션) {
+  const 내부 = document.getElementById('라이트박스내부');
+  내부.style.transition = 애니메이션 ? 'transform .38s cubic-bezier(.4,0,.2,1)' : 'none';
+  내부.style.transform = `translateX(-${라이트박스현재 * 100}%)`;
+  document.getElementById('라이트박스카운터').textContent = `${라이트박스현재 + 1} / ${갤러리목록.length}`;
+}
+
+// 라이트박스 스와이프
 (function() {
-  const 외부 = document.getElementById('갤러리외부');
   let sx = 0, sy = 0, 방향 = null;
-  외부.addEventListener('touchstart', e => {
-    if (e.touches.length > 1) { e.preventDefault(); return; }
+  const lb = document.getElementById('라이트박스감싸기');
+  lb.addEventListener('touchstart', e => {
     sx = e.touches[0].clientX; sy = e.touches[0].clientY; 방향 = null;
+  }, {passive:true});
+  lb.addEventListener('touchmove', e => {
+    if (!방향) { const dx=Math.abs(e.touches[0].clientX-sx), dy=Math.abs(e.touches[0].clientY-sy); 방향=dx>dy?'h':'v'; }
+    if (방향==='h') e.preventDefault();
   }, {passive:false});
-  외부.addEventListener('touchmove', e => {
-    if (e.touches.length > 1) { e.preventDefault(); return; }
-    if (!방향) { const dx=Math.abs(e.touches[0].clientX-sx), dy=Math.abs(e.touches[0].clientY-sy); 방향=dx>dy?'가로':'세로'; }
-    if (방향==='가로') e.preventDefault();
-  }, {passive:false});
-  외부.addEventListener('touchend', e => {
-    if (방향==='가로') { const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>40) 슬라이드이동(dx<0?현재+1:현재-1); }
+  lb.addEventListener('touchend', e => {
+    if (방향==='h') { const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>40) 라이트박스이동(라이트박스현재+(dx<0?1:-1)); }
     방향=null;
+  });
+  // ESC 키
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('라이트박스').classList.contains('열림')) return;
+    if (e.key==='Escape') 라이트박스닫기();
+    if (e.key==='ArrowLeft') 라이트박스이동(라이트박스현재-1);
+    if (e.key==='ArrowRight') 라이트박스이동(라이트박스현재+1);
   });
 })();
 
