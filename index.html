@@ -172,42 +172,96 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 .커버-스크롤-화살표{display:inline-block;width:1px;height:18px;background:rgba(255,255,255,.3);animation:화살표바운스 2s ease-in-out infinite 1.5s}
 
 /* ══ 2. 인사말 ══ */
-.인사말-페이지{background:var(--아이보리);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px 32px}
-.혼주-행{display:flex;justify-content:center;gap:40px;margin-bottom:28px}
+.인사말-페이지{background:var(--아이보리);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 32px;overflow:hidden}
+.혼주-행{display:flex;justify-content:center;gap:40px;margin-bottom:16px}
 .혼주-항목{text-align:center}
-.혼주-구분{font-size:10px;font-weight:300;letter-spacing:.14em;color:var(--탄);margin-bottom:4px}
+.혼주-구분{font-size:10px;font-weight:300;letter-spacing:.14em;color:var(--탄);margin-bottom:3px}
 .혼주-이름{font-size:12px;font-weight:300;color:var(--웜)}
-.인사말-구분선{width:36px;height:.5px;background:var(--샌드);margin-bottom:28px}
-.인사말-본문{font-size:14px;font-weight:300;color:var(--바크);line-height:2.5;letter-spacing:.05em;word-break:keep-all;text-align:center;margin-bottom:24px}
-.인사말-서명{font-size:13px;font-weight:300;color:var(--웜);letter-spacing:.06em;text-align:center}
+.인사말-구분선{width:36px;height:.5px;background:var(--샌드);margin-bottom:16px}
+.인사말-본문{font-size:12.5px;font-weight:300;color:var(--바크);line-height:1.95;letter-spacing:.04em;word-break:keep-all;text-align:center;margin-bottom:14px}
+.인사말-시-구절{font-size:12px;font-weight:300;color:var(--바크);line-height:1.9;letter-spacing:.04em;text-align:center;margin-bottom:6px}
+.인사말-시-출처{font-size:10.5px;font-weight:300;color:var(--탄);letter-spacing:.06em;text-align:center;margin-bottom:14px;font-style:italic}
+.인사말-구분-점선{width:24px;height:.5px;background:var(--샌드);margin:0 auto 14px}
+.인사말-서명{font-size:12px;font-weight:300;color:var(--웜);letter-spacing:.06em;text-align:center}
 
-/* ══ 3. 갤러리 — 바둑판 + 라이트박스 ══ */
+/* ══ 3. 갤러리 ══ */
 .갤러리-페이지{background:var(--아이보리);display:flex;flex-direction:column;overflow:hidden}
-.갤러리-그리드-감싸기{flex:1;overflow-y:auto;scrollbar-width:none;padding:2px}
-.갤러리-그리드-감싸기::-webkit-scrollbar{display:none}
-.갤러리-그리드{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
-.갤러리-썸네일{aspect-ratio:1;overflow:hidden;cursor:pointer;background:var(--아이보리2)}
-.갤러리-썸네일 img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s;-webkit-user-drag:none;pointer-events:none}
-.갤러리-썸네일:active img{opacity:.8}
 
-/* 라이트박스 */
+/* 상단 헤더 */
+.갤러리-헤더{
+  flex-shrink:0;
+  padding:16px 20px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:.5px solid var(--샌드);
+}
+.갤러리-헤더-제목{font-size:11px;font-weight:400;letter-spacing:.22em;color:var(--웜)}
+.갤러리-헤더-카운터{font-size:11px;font-weight:300;color:var(--탄);letter-spacing:.08em}
+
+/* 3×4 고정 그리드 (12장) — 나머지는 오른쪽으로 */
+.갤러리-그리드-감싸기{
+  flex:1;overflow:hidden;position:relative;
+}
+/* 전체 그리드를 가로 스크롤로 — 4열씩 페이지 */
+.갤러리-그리드-스크롤{
+  height:100%;
+  display:grid;
+  grid-template-rows:repeat(3,1fr);
+  grid-auto-flow:column;
+  grid-auto-columns:calc(100% / 3);
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  gap:2px;
+  padding:2px;
+}
+.갤러리-그리드-스크롤::-webkit-scrollbar{display:none}
+
+.갤러리-썸네일{
+  overflow:hidden;cursor:pointer;
+  background:var(--아이보리2);
+  scroll-snap-align:start;
+  position:relative;
+}
+/* 3열 기준으로 3번째 항목마다 스냅 */
+.갤러리-썸네일:nth-child(3n+1){scroll-snap-align:start}
+.갤러리-썸네일 img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  -webkit-user-drag:none;pointer-events:none;
+  user-select:none;-webkit-user-select:none;
+}
+.갤러리-썸네일:active img{opacity:.75}
+
+/* 페이지 인디케이터 */
+.갤러리-인디케이터{
+  flex-shrink:0;padding:8px 0 10px;
+  display:flex;justify-content:center;gap:6px;
+}
+.갤러리-인디케이터-점{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--샌드);transition:background .2s,transform .2s;
+}
+.갤러리-인디케이터-점.활성{background:var(--바크);transform:scale(1.35)}
+
+/* ── 라이트박스 (페이지 내, fixed 오버레이) ── */
 #라이트박스{
   position:fixed;inset:0;z-index:8888;
-  background:rgba(0,0,0,.95);
+  background:rgba(0,0,0,.96);
   display:none;flex-direction:column;
   align-items:center;justify-content:center;
+  touch-action:none;
 }
 #라이트박스.열림{display:flex}
 .라이트박스-닫기{
-  position:absolute;top:16px;right:18px;z-index:2;
-  width:36px;height:36px;border-radius:50%;
+  position:absolute;top:16px;right:16px;z-index:2;
+  width:38px;height:38px;border-radius:50%;
   background:rgba(255,255,255,.15);border:none;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;-webkit-tap-highlight-color:transparent;
 }
 .라이트박스-이미지-감싸기{
-  width:100%;flex:1;display:flex;align-items:center;justify-content:center;
-  overflow:hidden;position:relative;
+  width:100%;flex:1;overflow:hidden;position:relative;
 }
 .라이트박스-내부{
   display:flex;height:100%;width:100%;
@@ -216,30 +270,28 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 }
 .라이트박스-슬라이드{
   flex:0 0 100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
-  padding:8px;
+  display:flex;align-items:center;justify-content:center;padding:8px;
 }
 .라이트박스-슬라이드 img{
-  max-width:100%;max-height:100%;
-  object-fit:contain;display:block;
-  border-radius:2px;
+  max-width:100%;max-height:100%;object-fit:contain;
+  display:block;border-radius:2px;
   pointer-events:none;-webkit-user-drag:none;
+  user-select:none;-webkit-user-select:none;
 }
 .라이트박스-화살표{
   position:absolute;top:50%;transform:translateY(-50%);
   width:40px;height:40px;border-radius:50%;
-  background:rgba(255,255,255,.15);border:none;
+  background:rgba(255,255,255,.14);border:none;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;z-index:2;-webkit-tap-highlight-color:transparent;outline:none;
 }
-.라이트박스-화살표:active{background:rgba(255,255,255,.3)}
+.라이트박스-화살표:active{background:rgba(255,255,255,.28)}
 .라이트박스-화살표-좌{left:8px}
 .라이트박스-화살표-우{right:8px}
 .라이트박스-카운터{
-  font-family:'Noto Serif KR',serif;
   font-size:12px;font-weight:300;
-  color:rgba(255,255,255,.45);letter-spacing:.1em;
-  padding:12px 0 20px;flex-shrink:0;
+  color:rgba(255,255,255,.4);letter-spacing:.1em;
+  padding:12px 0 18px;flex-shrink:0;
 }
 
 /* ══ 4. 디데이 ══ */
@@ -390,18 +442,40 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
       <div class="혼주-항목"><div class="혼주-구분">신부측</div><div class="혼주-이름" id="신부혼주"></div></div>
     </div>
     <div class="인사말-구분선"></div>
-    <p class="인사말-본문" id="인사말본문"></p>
+    <p class="인사말-시-구절">
+      문득 아름다운 것과 마주쳤을 때<br>
+      지금 곁에 있으면 얼마나 좋을까 하고<br>
+      떠오르는 얼굴이 있다면<br>
+      그대는 사랑하고 있는 것이다.
+    </p>
+    <p class="인사말-시-출처">— 이문재, 농담</p>
+    <div class="인사말-구분-점선"></div>
+    <p class="인사말-본문">
+      맛있는 것을 먹고 좋은 풍경을 볼 때면<br>
+      서로가 가장 먼저 생각나는 사람이 되었습니다.<br><br>
+      혼자 걷던 길의 작은 즐거움들을<br>
+      이제 둘이 함께 나누려 합니다.<br><br>
+      저희 두 사람의 다정한 일상이 시작되는 날,<br>
+      귀한 걸음 하시어 축복해 주시면 감사하겠습니다.
+    </p>
     <p class="인사말-서명" id="인사말서명"></p>
   </section>
 
   <!-- 3. 갤러리 -->
   <section class="페이지-섹션 갤러리-페이지">
-    <div class="갤러리-그리드-감싸기">
-      <div class="갤러리-그리드" id="갤러리그리드"></div>
+    <div class="갤러리-헤더">
+      <span class="갤러리-헤더-제목">GALLERY</span>
+      <span class="갤러리-헤더-카운터" id="갤러리헤더카운터"></span>
     </div>
+    <div class="갤러리-그리드-감싸기">
+      <div class="갤러리-그리드-스크롤" id="갤러리스크롤">
+        <!-- JS로 생성 -->
+      </div>
+    </div>
+    <div class="갤러리-인디케이터" id="갤러리인디케이터"></div>
   </section>
 
-  <!-- 라이트박스 (전체화면 오버레이) -->
+  <!-- 라이트박스 -->
   <div id="라이트박스">
     <button class="라이트박스-닫기" onclick="라이트박스닫기()">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -565,7 +639,6 @@ function 설정적용() {
   $('커버날짜').textContent   = C.날짜표시 + '  ' + C.시간표시;
   $('신랑혼주').textContent   = C.신랑혼주;
   $('신부혼주').textContent   = C.신부혼주;
-  $('인사말본문').innerHTML   = C.인사말;
   $('인사말서명').textContent = C.신랑 + '·' + C.신부 + ' 올림';
   $('지도예식장').textContent = C.예식장 + ' · ' + C.홀;
   $('지도주소').innerHTML     = C.주소 + '<br>' + C.주소상세;
@@ -579,7 +652,7 @@ function 설정적용() {
   계좌렌더(C);
 }
 
-/* ── 갤러리 — 바둑판 + 라이트박스 + 랜덤 순서 ── */
+/* ── 갤러리 — 3행×가로스크롤 + 인디케이터 + 라이트박스 ── */
 let 갤러리목록 = [];
 let 라이트박스현재 = 0;
 
@@ -605,12 +678,34 @@ function 랜덤섞기(arr) {
 }
 
 function 갤러리빌드(목록) {
-  갤러리목록 = 랜덤섞기(목록);  // 랜덤 순서
-  const 그리드 = document.getElementById('갤러리그리드');
-  그리드.innerHTML = 갤러리목록.map((src, i) => `
+  갤러리목록 = 랜덤섞기(목록);
+  const 스크롤 = document.getElementById('갤러리스크롤');
+  const 인디케이터 = document.getElementById('갤러리인디케이터');
+  const 헤더카운터 = document.getElementById('갤러리헤더카운터');
+
+  // 썸네일 생성 — grid-auto-flow:column 이므로 순서대로 넣으면 3행×N열
+  스크롤.innerHTML = 갤러리목록.map((src, i) => `
     <div class="갤러리-썸네일" onclick="라이트박스열기(${i})">
       <img src="${src}" alt="사진 ${i+1}" loading="lazy">
     </div>`).join('');
+
+  // 총 페이지 수 (3행×3열 = 9장 = 1페이지)
+  const 페이지수 = Math.ceil(갤러리목록.length / 9);
+  헤더카운터.textContent = 갤러리목록.length + '장';
+
+  // 인디케이터 점
+  인디케이터.innerHTML = Array.from({length:페이지수}, (_, i) =>
+    `<div class="갤러리-인디케이터-점${i===0?' 활성':''}"></div>`
+  ).join('');
+
+  // 스크롤 인디케이터 업데이트
+  스크롤.addEventListener('scroll', () => {
+    const 열너비 = 스크롤.scrollWidth / (갤러리목록.length / 3);
+    const 페이지 = Math.round(스크롤.scrollLeft / (열너비 * 3));
+    document.querySelectorAll('.갤러리-인디케이터-점').forEach((d, i) =>
+      d.classList.toggle('활성', i === 페이지)
+    );
+  }, {passive:true});
 
   // 라이트박스 슬라이드 미리 생성
   const lb내부 = document.getElementById('라이트박스내부');
@@ -622,14 +717,16 @@ function 갤러리빌드(목록) {
 
 function 라이트박스열기(idx) {
   라이트박스현재 = idx;
-  document.getElementById('라이트박스').classList.add('열림');
-  document.body.style.overflow = 'hidden';
+  const lb = document.getElementById('라이트박스');
+  lb.classList.add('열림');
+  // 페이지 스크롤 잠금 (body 아닌 #페이지)
+  document.getElementById('페이지').style.overflow = 'hidden';
   라이트박스위치업데이트(false);
 }
 
 function 라이트박스닫기() {
   document.getElementById('라이트박스').classList.remove('열림');
-  document.body.style.overflow = '';
+  document.getElementById('페이지').style.overflow = '';
 }
 
 function 라이트박스이동(i) {
@@ -641,25 +738,25 @@ function 라이트박스위치업데이트(애니메이션) {
   const 내부 = document.getElementById('라이트박스내부');
   내부.style.transition = 애니메이션 ? 'transform .38s cubic-bezier(.4,0,.2,1)' : 'none';
   내부.style.transform = `translateX(-${라이트박스현재 * 100}%)`;
-  document.getElementById('라이트박스카운터').textContent = `${라이트박스현재 + 1} / ${갤러리목록.length}`;
+  document.getElementById('라이트박스카운터').textContent =
+    `${라이트박스현재 + 1} / ${갤러리목록.length}`;
 }
 
 // 라이트박스 스와이프
 (function() {
-  let sx = 0, sy = 0, 방향 = null;
+  let sx = 0, 방향 = null;
   const lb = document.getElementById('라이트박스감싸기');
   lb.addEventListener('touchstart', e => {
-    sx = e.touches[0].clientX; sy = e.touches[0].clientY; 방향 = null;
+    sx = e.touches[0].clientX; 방향 = null;
   }, {passive:true});
   lb.addEventListener('touchmove', e => {
-    if (!방향) { const dx=Math.abs(e.touches[0].clientX-sx), dy=Math.abs(e.touches[0].clientY-sy); 방향=dx>dy?'h':'v'; }
+    if (!방향) { 방향 = Math.abs(e.touches[0].clientX-sx) > 8 ? 'h' : 'v'; }
     if (방향==='h') e.preventDefault();
   }, {passive:false});
   lb.addEventListener('touchend', e => {
     if (방향==='h') { const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>40) 라이트박스이동(라이트박스현재+(dx<0?1:-1)); }
     방향=null;
   });
-  // ESC 키
   document.addEventListener('keydown', e => {
     if (!document.getElementById('라이트박스').classList.contains('열림')) return;
     if (e.key==='Escape') 라이트박스닫기();
