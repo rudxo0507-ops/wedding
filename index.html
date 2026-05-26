@@ -109,19 +109,19 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
   position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;opacity:0;transition:opacity .6s ease;
 }
-.로딩-그라데이션{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.05),rgba(0,0,0,.55));z-index:1}
+.로딩-그라데이션{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.65));z-index:1}
 .로딩-오버레이{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
-.로딩-이름{font-size:17px;font-weight:300;color:rgba(255,255,255,.9);letter-spacing:.12em;margin-bottom:7px;animation:숨쉬기 2s ease-in-out infinite}
-.로딩-날짜{font-size:12px;font-weight:300;color:rgba(255,255,255,.5);letter-spacing:.1em;margin-bottom:26px}
-.로딩-바-감싸기{width:60px;height:1px;background:rgba(255,255,255,.2);position:relative;overflow:hidden;margin-bottom:10px}
-.로딩-바{position:absolute;left:-100%;top:0;height:100%;width:100%;background:rgba(255,255,255,.7);animation:바슬라이드 1.5s ease-in-out infinite}
-.로딩-문구{font-size:11px;font-weight:300;color:rgba(255,255,255,.35);letter-spacing:.08em}
+.로딩-이름{font-size:18px;font-weight:400;color:#fff;letter-spacing:.12em;margin-bottom:8px;animation:숨쉬기 2s ease-in-out infinite;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+.로딩-날짜{font-size:13px;font-weight:300;color:rgba(255,255,255,.9);letter-spacing:.1em;margin-bottom:28px}
+.로딩-바-감싸기{width:60px;height:1px;background:rgba(255,255,255,.4);position:relative;overflow:hidden;margin-bottom:12px}
+.로딩-바{position:absolute;left:-100%;top:0;height:100%;width:100%;background:#fff;animation:바슬라이드 1.5s ease-in-out infinite}
+.로딩-문구{font-size:12px;font-weight:300;color:rgba(255,255,255,.85);letter-spacing:.08em}
 
 /* 건너뛰기 버튼 */
 #건너뛰기{
   font-family:'Noto Serif KR',serif;font-size:11px;font-weight:300;
-  color:rgba(255,255,255,.5);letter-spacing:.12em;
-  background:transparent;border:.5px solid rgba(255,255,255,.3);
+  color:rgba(255,255,255,.9);letter-spacing:.12em;
+  background:transparent;border:.5px solid rgba(255,255,255,.7);
   border-radius:2px;padding:8px 24px;cursor:pointer;
   margin-top:20px;
   opacity:0;visibility:hidden;
@@ -149,102 +149,97 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 /* ══ 1. 커버 ══ */
 .커버-배경{position:absolute;inset:0;background:#111}
 .커버-배경 img{width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.9}
-.커버-그라데이션{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.08) 0%,rgba(0,0,0,0) 35%,rgba(0,0,0,0) 50%,rgba(0,0,0,.62) 100%)}
+.커버-그라데이션{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.05) 0%,rgba(0,0,0,0) 25%,rgba(0,0,0,0) 45%,rgba(0,0,0,.72) 100%)}
 .커버-내용{
   position:absolute;inset:0;display:flex;flex-direction:column;
   align-items:center;justify-content:flex-end;
   padding:0 28px 52px;text-align:center;
   opacity:0;animation:위로등장 1s ease forwards .3s;
 }
-.커버-라벨{font-size:11px;font-weight:300;letter-spacing:.22em;color:rgba(255,255,255,.7);margin-bottom:10px}
-.커버-이름{font-size:30px;font-weight:400;color:#fff;letter-spacing:.08em;line-height:1.2;margin-bottom:6px;text-shadow:0 2px 12px rgba(0,0,0,.3)}
-.커버-구분선{display:inline-block;width:1px;height:20px;background:rgba(255,255,255,.5);vertical-align:middle;margin:0 14px;transform:translateY(-2px)}
-.커버-영문{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,.65);letter-spacing:.16em;margin-bottom:20px}
+.커버-라벨{font-size:11px;font-weight:300;letter-spacing:.22em;color:rgba(255,255,255,.85);margin-bottom:10px;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.커버-이름{font-size:30px;font-weight:400;color:#fff;letter-spacing:.08em;line-height:1.2;margin-bottom:6px;text-shadow:0 2px 16px rgba(0,0,0,.6)}
+.커버-구분선{display:inline-block;width:1px;height:20px;background:rgba(255,255,255,.7);vertical-align:middle;margin:0 14px;transform:translateY(-2px)}
+.커버-영문{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,.85);letter-spacing:.16em;margin-bottom:20px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
 .커버-날짜-행{display:flex;align-items:center;gap:16px;width:100%}
-.커버-날짜-라인{flex:1;height:.5px;background:rgba(255,255,255,.3)}
-.커버-날짜-텍스트{font-size:12px;font-weight:300;color:rgba(255,255,255,.75);letter-spacing:.06em;white-space:nowrap}
+.커버-날짜-라인{flex:1;height:.5px;background:rgba(255,255,255,.5)}
+.커버-날짜-텍스트{font-size:12px;font-weight:300;color:#fff;letter-spacing:.06em;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.5)}
 .커버-스크롤{
   position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
   display:flex;flex-direction:column;align-items:center;gap:6px;
   opacity:0;animation:페이드인 .6s ease forwards 1.4s;
 }
-.커버-스크롤-텍스트{font-size:9px;font-weight:300;letter-spacing:.18em;color:rgba(255,255,255,.4)}
-.커버-스크롤-화살표{display:inline-block;width:1px;height:18px;background:rgba(255,255,255,.3);animation:화살표바운스 2s ease-in-out infinite 1.5s}
+.커버-스크롤-텍스트{font-size:9px;font-weight:300;letter-spacing:.18em;color:rgba(255,255,255,.65);text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.커버-스크롤-화살표{display:inline-block;width:1px;height:18px;background:rgba(255,255,255,.55);animation:화살표바운스 2s ease-in-out infinite 1.5s}
 
 /* ══ 2. 인사말 ══ */
-.인사말-페이지{background:var(--아이보리);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 32px;overflow:hidden}
-.혼주-행{display:flex;justify-content:center;gap:40px;margin-bottom:16px}
+.인사말-페이지{background:var(--아이보리);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 32px;overflow:hidden}
+.혼주-행{display:flex;justify-content:center;gap:40px;margin-bottom:12px}
 .혼주-항목{text-align:center}
 .혼주-구분{font-size:10px;font-weight:300;letter-spacing:.14em;color:var(--탄);margin-bottom:3px}
 .혼주-이름{font-size:12px;font-weight:300;color:var(--웜)}
-.인사말-구분선{width:36px;height:.5px;background:var(--샌드);margin-bottom:16px}
-.인사말-본문{font-size:12.5px;font-weight:300;color:var(--바크);line-height:1.95;letter-spacing:.04em;word-break:keep-all;text-align:center;margin-bottom:14px}
-.인사말-시-구절{font-size:12px;font-weight:300;color:var(--바크);line-height:1.9;letter-spacing:.04em;text-align:center;margin-bottom:6px}
-.인사말-시-출처{font-size:10.5px;font-weight:300;color:var(--탄);letter-spacing:.06em;text-align:center;margin-bottom:14px;font-style:italic}
-.인사말-구분-점선{width:24px;height:.5px;background:var(--샌드);margin:0 auto 14px}
+.인사말-구분선{width:36px;height:.5px;background:var(--샌드);margin-bottom:14px}
+.인사말-본문{font-size:12px;font-weight:300;color:var(--바크);line-height:1.8;letter-spacing:.04em;word-break:keep-all;text-align:center;margin-bottom:12px}
+.인사말-시-구절{font-size:12px;font-weight:300;color:var(--바크);line-height:1.75;letter-spacing:.04em;text-align:center;margin-bottom:0}
+.인사말-시-출처{font-size:10.5px;font-weight:300;color:var(--탄);letter-spacing:.06em;text-align:center;margin-bottom:12px;font-style:italic;margin-top:4px}
+.인사말-구분-점선{width:24px;height:.5px;background:var(--샌드);margin:0 auto 12px}
 .인사말-서명{font-size:12px;font-weight:300;color:var(--웜);letter-spacing:.06em;text-align:center}
 
 /* ══ 3. 갤러리 ══ */
 .갤러리-페이지{background:var(--아이보리);display:flex;flex-direction:column;overflow:hidden}
 
-/* 상단 헤더 */
-.갤러리-헤더{
-  flex-shrink:0;
-  padding:16px 20px 10px;
-  display:flex;align-items:center;justify-content:space-between;
+/* 타이틀 영역 */
+.갤러리-타이틀{
+  flex-shrink:0;padding:18px 24px 12px;
   border-bottom:.5px solid var(--샌드);
 }
-.갤러리-헤더-제목{font-size:11px;font-weight:400;letter-spacing:.22em;color:var(--웜)}
-.갤러리-헤더-카운터{font-size:11px;font-weight:300;color:var(--탄);letter-spacing:.08em}
+.갤러리-타이틀-텍스트{font-size:10px;font-weight:400;letter-spacing:.28em;color:var(--웜);display:block;margin-bottom:3px}
+.갤러리-타이틀-서브{font-size:11px;font-weight:300;color:var(--탄);letter-spacing:.06em}
 
-/* 3×4 고정 그리드 (12장) — 나머지는 오른쪽으로 */
-.갤러리-그리드-감싸기{
-  flex:1;overflow:hidden;position:relative;
-}
-/* 전체 그리드를 가로 스크롤로 — 4열씩 페이지 */
-.갤러리-그리드-스크롤{
-  height:100%;
+/* 그리드 영역 — 3열 4행 고정 */
+.갤러리-그리드-감싸기{flex:1;overflow:hidden;position:relative}
+.갤러리-그리드{
+  height:100%;width:100%;
   display:grid;
-  grid-template-rows:repeat(3,1fr);
-  grid-auto-flow:column;
-  grid-auto-columns:calc(100% / 3);
-  overflow-x:auto;
-  overflow-y:hidden;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-  gap:2px;
-  padding:2px;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(4,1fr);
+  gap:2px;padding:2px;
 }
-.갤러리-그리드-스크롤::-webkit-scrollbar{display:none}
-
 .갤러리-썸네일{
-  overflow:hidden;cursor:pointer;
-  background:var(--아이보리2);
-  scroll-snap-align:start;
-  position:relative;
+  overflow:hidden;cursor:pointer;background:var(--아이보리2);
 }
-/* 3열 기준으로 3번째 항목마다 스냅 */
-.갤러리-썸네일:nth-child(3n+1){scroll-snap-align:start}
 .갤러리-썸네일 img{
   width:100%;height:100%;object-fit:cover;display:block;
   -webkit-user-drag:none;pointer-events:none;
   user-select:none;-webkit-user-select:none;
 }
-.갤러리-썸네일:active img{opacity:.75}
+.갤러리-썸네일:active img{opacity:.72}
+.갤러리-썸네일.빈{background:transparent;cursor:default}
 
-/* 페이지 인디케이터 */
-.갤러리-인디케이터{
-  flex-shrink:0;padding:8px 0 10px;
-  display:flex;justify-content:center;gap:6px;
+/* 하단 — 이전/다음 버튼 + 인디케이터 */
+.갤러리-하단{
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  gap:16px;padding:10px 20px;
+  border-top:.5px solid var(--샌드);
 }
+.갤러리-페이지-버튼{
+  width:34px;height:34px;border-radius:50%;
+  border:.5px solid var(--샌드);background:var(--아이보리2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none;
+  transition:background .15s;
+}
+.갤러리-페이지-버튼:active{background:var(--샌드)}
+.갤러리-페이지-버튼:disabled{opacity:.3;cursor:default}
+.갤러리-인디케이터{display:flex;gap:6px;align-items:center}
 .갤러리-인디케이터-점{
   width:5px;height:5px;border-radius:50%;
   background:var(--샌드);transition:background .2s,transform .2s;
 }
 .갤러리-인디케이터-점.활성{background:var(--바크);transform:scale(1.35)}
+.갤러리-페이지-텍스트{font-size:11px;font-weight:300;color:var(--탄);letter-spacing:.08em;min-width:40px;text-align:center}
 
-/* ── 라이트박스 (페이지 내, fixed 오버레이) ── */
+/* ── 라이트박스 ── */
 #라이트박스{
   position:fixed;inset:0;z-index:8888;
   background:rgba(0,0,0,.96);
@@ -290,8 +285,8 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 .라이트박스-화살표-우{right:8px}
 .라이트박스-카운터{
   font-size:12px;font-weight:300;
-  color:rgba(255,255,255,.4);letter-spacing:.1em;
-  padding:12px 0 18px;flex-shrink:0;
+  color:rgba(255,255,255,.55);letter-spacing:.1em;
+  padding:10px 0 16px;flex-shrink:0;
 }
 
 /* ══ 4. 디데이 ══ */
@@ -463,16 +458,23 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 
   <!-- 3. 갤러리 -->
   <section class="페이지-섹션 갤러리-페이지">
-    <div class="갤러리-헤더">
-      <span class="갤러리-헤더-제목">GALLERY</span>
-      <span class="갤러리-헤더-카운터" id="갤러리헤더카운터"></span>
+    <div class="갤러리-타이틀">
+      <span class="갤러리-타이틀-텍스트">GALLERY</span>
+      <span class="갤러리-타이틀-서브" id="갤러리타이틀서브"></span>
     </div>
     <div class="갤러리-그리드-감싸기">
-      <div class="갤러리-그리드-스크롤" id="갤러리스크롤">
-        <!-- JS로 생성 -->
-      </div>
+      <div class="갤러리-그리드" id="갤러리그리드"></div>
     </div>
-    <div class="갤러리-인디케이터" id="갤러리인디케이터"></div>
+    <div class="갤러리-하단">
+      <button class="갤러리-페이지-버튼" id="갤러리이전" onclick="갤러리페이지이동(-1)" aria-label="이전">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="#5A4E42" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="갤러리-인디케이터" id="갤러리인디케이터"></div>
+      <div class="갤러리-페이지-텍스트" id="갤러리페이지텍스트"></div>
+      <button class="갤러리-페이지-버튼" id="갤러리다음" onclick="갤러리페이지이동(1)" aria-label="다음">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="#5A4E42" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
   </section>
 
   <!-- 라이트박스 -->
@@ -652,9 +654,11 @@ function 설정적용() {
   계좌렌더(C);
 }
 
-/* ── 갤러리 — 3행×가로스크롤 + 인디케이터 + 라이트박스 ── */
+/* ── 갤러리 — 3열 4행 페이지 방식 + 라이트박스 ── */
 let 갤러리목록 = [];
+let 갤러리현재페이지 = 0;
 let 라이트박스현재 = 0;
+const 페이지당장수 = 12; // 3열 × 4행
 
 function 갤러리초기화(파일목록) {
   let 확인 = 0;
@@ -679,47 +683,72 @@ function 랜덤섞기(arr) {
 
 function 갤러리빌드(목록) {
   갤러리목록 = 랜덤섞기(목록);
-  const 스크롤 = document.getElementById('갤러리스크롤');
-  const 인디케이터 = document.getElementById('갤러리인디케이터');
-  const 헤더카운터 = document.getElementById('갤러리헤더카운터');
+  const 총페이지 = Math.ceil(갤러리목록.length / 페이지당장수);
 
-  // 썸네일 생성 — grid-auto-flow:column 이므로 순서대로 넣으면 3행×N열
-  스크롤.innerHTML = 갤러리목록.map((src, i) => `
-    <div class="갤러리-썸네일" onclick="라이트박스열기(${i})">
-      <img src="${src}" alt="사진 ${i+1}" loading="lazy">
-    </div>`).join('');
-
-  // 총 페이지 수 (3행×3열 = 9장 = 1페이지)
-  const 페이지수 = Math.ceil(갤러리목록.length / 9);
-  헤더카운터.textContent = 갤러리목록.length + '장';
+  // 서브타이틀
+  document.getElementById('갤러리타이틀서브').textContent = 갤러리목록.length + '장';
 
   // 인디케이터 점
-  인디케이터.innerHTML = Array.from({length:페이지수}, (_, i) =>
+  const 인디케이터 = document.getElementById('갤러리인디케이터');
+  인디케이터.innerHTML = Array.from({length:총페이지}, (_, i) =>
     `<div class="갤러리-인디케이터-점${i===0?' 활성':''}"></div>`
   ).join('');
 
-  // 스크롤 인디케이터 업데이트
-  스크롤.addEventListener('scroll', () => {
-    const 열너비 = 스크롤.scrollWidth / (갤러리목록.length / 3);
-    const 페이지 = Math.round(스크롤.scrollLeft / (열너비 * 3));
-    document.querySelectorAll('.갤러리-인디케이터-점').forEach((d, i) =>
-      d.classList.toggle('활성', i === 페이지)
-    );
-  }, {passive:true});
-
   // 라이트박스 슬라이드 미리 생성
-  const lb내부 = document.getElementById('라이트박스내부');
-  lb내부.innerHTML = 갤러리목록.map((src, i) => `
-    <div class="라이트박스-슬라이드">
-      <img src="${src}" alt="사진 ${i+1}">
-    </div>`).join('');
+  document.getElementById('라이트박스내부').innerHTML =
+    갤러리목록.map((src, i) =>
+      `<div class="라이트박스-슬라이드"><img src="${src}" alt="사진 ${i+1}"></div>`
+    ).join('');
+
+  갤러리현재페이지 = 0;
+  갤러리렌더링();
 }
 
+function 갤러리렌더링() {
+  const 그리드 = document.getElementById('갤러리그리드');
+  const 총페이지 = Math.ceil(갤러리목록.length / 페이지당장수);
+  const 시작 = 갤러리현재페이지 * 페이지당장수;
+  const 현재페이지사진 = 갤러리목록.slice(시작, 시작 + 페이지당장수);
+
+  // 빈 칸 채워서 항상 12개 셀 유지
+  let html = '';
+  for (let i = 0; i < 페이지당장수; i++) {
+    const src = 현재페이지사진[i];
+    const 실제idx = 시작 + i;
+    if (src) {
+      html += `<div class="갤러리-썸네일" onclick="라이트박스열기(${실제idx})">
+        <img src="${src}" alt="사진 ${실제idx+1}" loading="lazy">
+      </div>`;
+    } else {
+      html += `<div class="갤러리-썸네일 빈"></div>`;
+    }
+  }
+  그리드.innerHTML = html;
+
+  // 인디케이터 업데이트
+  document.querySelectorAll('.갤러리-인디케이터-점').forEach((d, i) =>
+    d.classList.toggle('활성', i === 갤러리현재페이지)
+  );
+
+  // 페이지 텍스트
+  document.getElementById('갤러리페이지텍스트').textContent =
+    `${갤러리현재페이지+1} / ${총페이지}`;
+
+  // 버튼 활성화
+  document.getElementById('갤러리이전').disabled = 갤러리현재페이지 === 0;
+  document.getElementById('갤러리다음').disabled = 갤러리현재페이지 === 총페이지 - 1;
+}
+
+function 갤러리페이지이동(방향) {
+  const 총페이지 = Math.ceil(갤러리목록.length / 페이지당장수);
+  갤러리현재페이지 = Math.max(0, Math.min(총페이지 - 1, 갤러리현재페이지 + 방향));
+  갤러리렌더링();
+}
+
+/* ── 라이트박스 ── */
 function 라이트박스열기(idx) {
   라이트박스현재 = idx;
-  const lb = document.getElementById('라이트박스');
-  lb.classList.add('열림');
-  // 페이지 스크롤 잠금 (body 아닌 #페이지)
+  document.getElementById('라이트박스').classList.add('열림');
   document.getElementById('페이지').style.overflow = 'hidden';
   라이트박스위치업데이트(false);
 }
@@ -750,12 +779,15 @@ function 라이트박스위치업데이트(애니메이션) {
     sx = e.touches[0].clientX; 방향 = null;
   }, {passive:true});
   lb.addEventListener('touchmove', e => {
-    if (!방향) { 방향 = Math.abs(e.touches[0].clientX-sx) > 8 ? 'h' : 'v'; }
+    if (!방향) 방향 = Math.abs(e.touches[0].clientX-sx) > 8 ? 'h' : 'v';
     if (방향==='h') e.preventDefault();
   }, {passive:false});
   lb.addEventListener('touchend', e => {
-    if (방향==='h') { const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>40) 라이트박스이동(라이트박스현재+(dx<0?1:-1)); }
-    방향=null;
+    if (방향==='h') {
+      const dx = e.changedTouches[0].clientX - sx;
+      if (Math.abs(dx) > 40) 라이트박스이동(라이트박스현재 + (dx < 0 ? 1 : -1));
+    }
+    방향 = null;
   });
   document.addEventListener('keydown', e => {
     if (!document.getElementById('라이트박스').classList.contains('열림')) return;
