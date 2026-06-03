@@ -170,13 +170,12 @@ body{width:100%;height:100%;background:#000;font-family:'NumPretendard','Noto Se
   padding:52px 28px 52px;text-align:center;
   opacity:0;animation:위로등장 1s ease forwards .3s;
 }
-.커버-상단{display:flex;flex-direction:column;align-items:center;gap:12px}
-.커버-라벨{font-size:14px;font-weight:300;letter-spacing:.22em;color:rgba(255,255,255,.9);text-shadow:0 1px 8px rgba(0,0,0,.6);background:rgba(0,0,0,.18);padding:8px 20px;border-radius:20px;backdrop-filter:blur(2px)}
+.커버-상단{display:flex;flex-direction:column;align-items:center;gap:10px}
+.커버-라벨{font-size:14px;font-weight:300;letter-spacing:.22em;color:rgba(255,255,255,.9);text-shadow:0 2px 8px rgba(0,0,0,.7)}
 .커버-디데이{
   font-size:16px;font-weight:400;color:#fff;
   letter-spacing:.08em;
-  background:rgba(0,0,0,.28);padding:8px 22px;border-radius:16px;
-  text-shadow:0 1px 6px rgba(0,0,0,.5);
+  text-shadow:0 2px 8px rgba(0,0,0,.7);
 }
 .커버-하단{display:flex;flex-direction:column;align-items:center;width:100%}
 .커버-하단{display:flex;flex-direction:column;align-items:center;width:100%;gap:0}
@@ -212,11 +211,12 @@ body{width:100%;height:100%;background:#000;font-family:'NumPretendard','Noto Se
 
 /* 타이틀 영역 */
 .갤러리-타이틀{
-  flex-shrink:0;padding:18px 24px 12px;
+  flex-shrink:0;padding:16px 24px 12px;
   border-bottom:.5px solid var(--샌드);
+  display:flex;align-items:baseline;gap:10px;
 }
-.갤러리-타이틀-텍스트{font-size:10px;font-weight:400;letter-spacing:.28em;color:var(--웜);display:block;margin-bottom:3px}
-.갤러리-타이틀-서브{font-size:11px;font-weight:300;color:var(--탄);letter-spacing:.06em}
+.갤러리-타이틀-텍스트{font-size:16px;font-weight:400;letter-spacing:.08em;color:var(--잉크);display:block}
+.갤러리-타이틀-서브{font-size:12px;font-weight:300;color:var(--탄);letter-spacing:.06em}
 
 /* 그리드 영역 — 3열 4행 고정 */
 .갤러리-그리드-감싸기{flex:1;overflow:hidden;position:relative}
@@ -339,23 +339,25 @@ body{width:100%;height:100%;background:#000;font-family:'NumPretendard','Noto Se
 .교통-페이지{background:var(--아이보리);display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:none}
 .교통-페이지::-webkit-scrollbar{display:none}
 .교통-컨텐츠{padding:24px 20px 32px}
-.교통-소제목{font-size:11px;font-weight:400;letter-spacing:.2em;color:var(--웜);text-align:center;margin-bottom:20px}
+.교통-소제목{font-size:13px;font-weight:400;letter-spacing:.2em;color:var(--잉크);text-align:center;margin-bottom:20px}
 .교통-항목-카드{background:var(--아이보리2);border-radius:6px;padding:16px 18px;margin-bottom:12px;border:.5px solid var(--샌드)}
-.교통-항목-헤더{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:.5px solid var(--샌드)}
+.교통-항목-헤더{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:.5px solid var(--샌드)}
 .교통-항목-아이콘{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.교통-항목-제목{font-size:14px;font-weight:400;color:var(--바크);letter-spacing:.04em}
-.교통-항목-배지{margin-left:auto;font-size:10px;font-weight:300;color:var(--웜);background:var(--아이보리);border:.5px solid var(--샌드);border-radius:10px;padding:2px 8px;letter-spacing:.04em}
-.셔틀-시간-행{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.셔틀-시간-뱃지{font-size:14px;font-weight:400;color:var(--바크);background:var(--아이보리);border:.5px solid var(--탄);border-radius:4px;padding:5px 12px;letter-spacing:.04em}
-.교통-세부{display:flex;flex-direction:column;gap:7px}
-.교통-세부-행{display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:300;color:var(--웜);line-height:1.6}
-.교통-세부-행::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--탄);margin-top:8px;flex-shrink:0}
-.교통-세부-행 b{font-weight:400;color:var(--바크)}
-.노선그룹{margin-bottom:8px}
-.노선그룹-라벨{font-size:11px;font-weight:300;color:var(--탄);margin-bottom:4px;letter-spacing:.04em}
-.노선태그{display:inline-block;font-size:11px;font-weight:300;padding:2px 7px;border:.5px solid var(--샌드);border-radius:2px;color:var(--웜);margin:2px 2px 0 0;line-height:1.6}
-.노선태그.강조{border-color:var(--탄);color:var(--바크);font-weight:400}
-.마음전하기-버튼{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;margin-top:4px;background:var(--아이보리2);border:.5px solid var(--샌드);border-radius:6px;font-size:13px;font-weight:300;color:var(--바크);cursor:pointer;letter-spacing:.04em;-webkit-tap-highlight-color:transparent}
+.교통-항목-제목{font-size:15px;font-weight:400;color:var(--잉크);letter-spacing:.04em}
+.교통-항목-배지{margin-left:auto;font-size:11px;font-weight:300;color:var(--웜);letter-spacing:.04em}
+/* 셔틀 시간 — 박스 없이 텍스트만 */
+.셔틀-시간-텍스트{font-size:14px;font-weight:400;color:var(--잉크);letter-spacing:.04em;margin-top:6px}
+/* 교통 세부 항목 — 통일 */
+.교통-세부{display:flex;flex-direction:column;gap:8px}
+.교통-세부-행{display:flex;align-items:flex-start;gap:8px;font-size:14px;font-weight:300;color:var(--잉크);line-height:1.6}
+.교통-세부-행::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--탄);margin-top:9px;flex-shrink:0}
+.교통-세부-행 b{font-weight:500;color:var(--잉크)}
+/* 버스 노선 — 통일 */
+.노선그룹{margin-bottom:10px}
+.노선그룹-라벨{font-size:13px;font-weight:400;color:var(--잉크);margin-bottom:6px;letter-spacing:.04em}
+.노선태그{display:inline-block;font-size:12px;font-weight:300;padding:2px 8px;border:.5px solid var(--샌드);border-radius:2px;color:var(--잉크);margin:2px 2px 0 0;line-height:1.7}
+.노선태그.강조{border-color:var(--샌드);color:var(--잉크);font-weight:300}
+.마음전하기-버튼{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;margin-top:4px;background:var(--아이보리2);border:.5px solid var(--샌드);border-radius:6px;font-size:14px;font-weight:300;color:var(--잉크);cursor:pointer;letter-spacing:.04em;-webkit-tap-highlight-color:transparent}
 .마음전하기-버튼:active{background:var(--샌드)}
 
 /* ══ 계좌 팝업 ══ */
@@ -471,7 +473,7 @@ body{width:100%;height:100%;background:#000;font-family:'NumPretendard','Noto Se
   <!-- 3. 갤러리 -->
   <section class="페이지-섹션 갤러리-페이지">
     <div class="갤러리-타이틀">
-      <span class="갤러리-타이틀-텍스트">GALLERY</span>
+      <span class="갤러리-타이틀-텍스트">사진첩</span>
       <span class="갤러리-타이틀-서브" id="갤러리타이틀서브"></span>
     </div>
     <div class="갤러리-그리드-감싸기">
@@ -555,11 +557,7 @@ body{width:100%;height:100%;background:#000;font-family:'NumPretendard','Noto Se
         <div class="교통-세부">
           <div class="교통-세부-행"><b>기흥역 1번 출구</b> 승차</div>
         </div>
-        <div class="셔틀-시간-행">
-          <span class="셔틀-시간-뱃지">10:10</span>
-          <span class="셔틀-시간-뱃지">10:25</span>
-          <span class="셔틀-시간-뱃지">10:40</span>
-        </div>
+        <div class="셔틀-시간-텍스트">10:10, 10:25, 10:40 출발</div>
       </div>
 
       <!-- 지하철 -->
