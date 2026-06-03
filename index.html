@@ -12,6 +12,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+KR:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+/* 숫자(0-9)만 Pretendard로, 나머지는 기존 폰트 유지 */
+@font-face {
+  font-family: 'NotoSerifKR';
+  src: local('Noto Serif KR');
+}
+@font-face {
+  font-family: 'NumPretendard';
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.woff2') format('woff2');
+  unicode-range: U+0030-0039, U+002D, U+002E, U+003A;
+  font-weight: 100 900;
+  font-display: swap;
+}
+</style>
 
 <script>
 /* ═══════════════════════════════════════
@@ -96,7 +110,7 @@ const CONFIG = {
   --탄:#B8AFA0;--웜:#8C7F72;--바크:#5A4E42;--잉크:#2E2620;
 }
 html{overflow:hidden;height:100%}
-body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+body{width:100%;height:100%;background:#000;font-family:'NumPretendard','Noto Serif KR',serif;-webkit-font-smoothing:antialiased;overflow:hidden}
 
 /* ══ 로딩 ══ */
 #로딩화면{
@@ -152,14 +166,23 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 .커버-그라데이션{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.05) 0%,rgba(0,0,0,0) 25%,rgba(0,0,0,0) 45%,rgba(0,0,0,.72) 100%)}
 .커버-내용{
   position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:flex-end;
-  padding:0 28px 52px;text-align:center;
+  align-items:center;justify-content:space-between;
+  padding:52px 28px 52px;text-align:center;
   opacity:0;animation:위로등장 1s ease forwards .3s;
 }
-.커버-라벨{font-size:11px;font-weight:300;letter-spacing:.22em;color:rgba(255,255,255,.85);margin-bottom:10px;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.커버-상단{display:flex;flex-direction:column;align-items:center;gap:12px}
+.커버-라벨{font-size:14px;font-weight:300;letter-spacing:.22em;color:rgba(255,255,255,.9);text-shadow:0 1px 8px rgba(0,0,0,.6);background:rgba(0,0,0,.18);padding:8px 20px;border-radius:20px;backdrop-filter:blur(2px)}
+.커버-디데이{
+  font-size:16px;font-weight:400;color:#fff;
+  letter-spacing:.08em;
+  background:rgba(0,0,0,.28);padding:8px 22px;border-radius:16px;
+  text-shadow:0 1px 6px rgba(0,0,0,.5);
+}
+.커버-하단{display:flex;flex-direction:column;align-items:center;width:100%}
+.커버-하단{display:flex;flex-direction:column;align-items:center;width:100%;gap:0}
 .커버-이름{font-size:30px;font-weight:400;color:#fff;letter-spacing:.08em;line-height:1.2;margin-bottom:6px;text-shadow:0 2px 16px rgba(0,0,0,.6)}
 .커버-구분선{display:inline-block;width:1px;height:20px;background:rgba(255,255,255,.7);vertical-align:middle;margin:0 14px;transform:translateY(-2px)}
-.커버-영문{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,.85);letter-spacing:.16em;margin-bottom:20px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.커버-영문{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,.9);letter-spacing:.16em;margin-bottom:20px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
 .커버-날짜-행{display:flex;align-items:center;gap:16px;width:100%}
 .커버-날짜-라인{flex:1;height:.5px;background:rgba(255,255,255,.5)}
 .커버-날짜-텍스트{font-size:12px;font-weight:300;color:#fff;letter-spacing:.06em;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.5)}
@@ -172,17 +195,17 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 .커버-스크롤-화살표{display:inline-block;width:1px;height:18px;background:rgba(255,255,255,.55);animation:화살표바운스 2s ease-in-out infinite 1.5s}
 
 /* ══ 2. 인사말 ══ */
-.인사말-페이지{background:var(--아이보리);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 32px;overflow:hidden}
-.혼주-행{display:flex;justify-content:center;gap:40px;margin-bottom:12px}
+.인사말-페이지{background:var(--아이보리);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 32px;overflow:hidden}
+.혼주-행{display:flex;justify-content:center;gap:40px;margin-bottom:28px}
 .혼주-항목{text-align:center}
-.혼주-구분{font-size:10px;font-weight:300;letter-spacing:.14em;color:var(--탄);margin-bottom:3px}
-.혼주-이름{font-size:12px;font-weight:300;color:var(--웜)}
-.인사말-구분선{width:36px;height:.5px;background:var(--샌드);margin-bottom:14px}
-.인사말-본문{font-size:12px;font-weight:300;color:var(--바크);line-height:1.8;letter-spacing:.04em;word-break:keep-all;text-align:center;margin-bottom:12px}
-.인사말-시-구절{font-size:12px;font-weight:300;color:var(--바크);line-height:1.75;letter-spacing:.04em;text-align:center;margin-bottom:0}
-.인사말-시-출처{font-size:10.5px;font-weight:300;color:var(--탄);letter-spacing:.06em;text-align:center;margin-bottom:12px;font-style:italic;margin-top:4px}
-.인사말-구분-점선{width:24px;height:.5px;background:var(--샌드);margin:0 auto 12px}
-.인사말-서명{font-size:12px;font-weight:300;color:var(--웜);letter-spacing:.06em;text-align:center}
+.혼주-구분{font-size:11px;font-weight:300;letter-spacing:.14em;color:var(--탄);margin-bottom:5px}
+.혼주-이름{font-size:15px;font-weight:400;color:var(--바크);letter-spacing:.02em}
+.인사말-구분선{width:36px;height:.5px;background:var(--샌드);margin-bottom:28px}
+.인사말-시-구절{font-size:14px;font-weight:300;color:var(--바크);line-height:2;letter-spacing:.04em;text-align:center;margin-bottom:0}
+.인사말-시-출처{font-size:12px;font-weight:300;color:var(--탄);letter-spacing:.06em;text-align:center;font-style:italic;margin-top:8px;margin-bottom:0}
+.인사말-구분-점선{width:24px;height:.5px;background:var(--샌드);margin:28px auto}
+.인사말-본문{font-size:14px;font-weight:300;color:var(--바크);line-height:2;letter-spacing:.04em;word-break:keep-all;text-align:center;margin-bottom:0}
+.인사말-서명{font-size:14px;font-weight:400;color:var(--바크);letter-spacing:.06em;text-align:center;margin-top:28px}
 
 /* ══ 3. 갤러리 ══ */
 .갤러리-페이지{background:var(--아이보리);display:flex;flex-direction:column;overflow:hidden}
@@ -289,13 +312,7 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
   padding:10px 0 16px;flex-shrink:0;
 }
 
-/* ══ 4. 디데이 ══ */
-.디데이-페이지{background:#EDE8E0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 32px}
-.디데이-숫자{font-family:'Cormorant Garamond',serif;font-size:80px;font-weight:300;color:var(--잉크);line-height:1}
-.디데이-라벨{font-size:13px;font-weight:300;letter-spacing:.18em;color:var(--웜);margin-top:12px}
-.디데이-날짜{font-size:14px;font-weight:300;color:var(--바크);margin-top:10px;letter-spacing:.04em}
-.디데이-구분선{width:36px;height:.5px;background:var(--샌드);margin:24px 0}
-.디데이-장소{font-size:13px;font-weight:300;color:var(--웜);letter-spacing:.04em;text-align:center;line-height:1.9}
+/* ══ 4. 디데이 페이지 — 커버로 이동, 페이지 제거 ══ */
 
 /* ══ 5. 오시는 길 ══ */
 .지도-페이지{background:var(--아이보리);display:flex;flex-direction:column}
@@ -318,70 +335,62 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
 .네비-버튼:active{background:var(--샌드)}
 .네비-버튼-이름{font-size:11px;font-weight:300;color:var(--바크)}
 
-/* ══ 6. 교통 + 공유 + 계좌 통합 페이지 ══ */
-.교통-페이지{
-  background:var(--아이보리);display:flex;flex-direction:column;
-  overflow-y:auto;scrollbar-width:none;
-}
+/* ══ 6. 교통 — 풀 페이지, 큰 글씨 ══ */
+.교통-페이지{background:var(--아이보리);display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:none}
 .교통-페이지::-webkit-scrollbar{display:none}
-.교통-상단{padding:22px 22px 16px;flex-shrink:0}
-.교통-소제목{font-size:11px;font-weight:400;letter-spacing:.2em;color:var(--웜);text-align:center;margin-bottom:14px}
-.교통-그리드{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}
-.교통-블록{display:flex;flex-direction:column;gap:5px}
-.교통-유형-행{display:flex;align-items:center;gap:6px;padding-bottom:5px;border-bottom:.5px solid var(--샌드);margin-bottom:3px}
-.교통-유형-이름{font-size:12px;font-weight:400;letter-spacing:.06em;color:var(--바크)}
-.교통-내용-텍스트{font-size:11px;font-weight:300;color:var(--웜);line-height:1.8}
-.교통-내용-텍스트 b{font-weight:400;color:var(--바크)}
-.노선태그{display:inline-block;font-size:10px;font-weight:300;padding:1px 5px;border:.5px solid var(--샌드);border-radius:1px;color:var(--웜);margin:1px 1px 0 0;line-height:1.5}
+.교통-컨텐츠{padding:24px 20px 32px}
+.교통-소제목{font-size:11px;font-weight:400;letter-spacing:.2em;color:var(--웜);text-align:center;margin-bottom:20px}
+.교통-항목-카드{background:var(--아이보리2);border-radius:6px;padding:16px 18px;margin-bottom:12px;border:.5px solid var(--샌드)}
+.교통-항목-헤더{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:.5px solid var(--샌드)}
+.교통-항목-아이콘{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.교통-항목-제목{font-size:14px;font-weight:400;color:var(--바크);letter-spacing:.04em}
+.교통-항목-배지{margin-left:auto;font-size:10px;font-weight:300;color:var(--웜);background:var(--아이보리);border:.5px solid var(--샌드);border-radius:10px;padding:2px 8px;letter-spacing:.04em}
+.셔틀-시간-행{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.셔틀-시간-뱃지{font-size:14px;font-weight:400;color:var(--바크);background:var(--아이보리);border:.5px solid var(--탄);border-radius:4px;padding:5px 12px;letter-spacing:.04em}
+.교통-세부{display:flex;flex-direction:column;gap:7px}
+.교통-세부-행{display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:300;color:var(--웜);line-height:1.6}
+.교통-세부-행::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--탄);margin-top:8px;flex-shrink:0}
+.교통-세부-행 b{font-weight:400;color:var(--바크)}
+.노선그룹{margin-bottom:8px}
+.노선그룹-라벨{font-size:11px;font-weight:300;color:var(--탄);margin-bottom:4px;letter-spacing:.04em}
+.노선태그{display:inline-block;font-size:11px;font-weight:300;padding:2px 7px;border:.5px solid var(--샌드);border-radius:2px;color:var(--웜);margin:2px 2px 0 0;line-height:1.6}
 .노선태그.강조{border-color:var(--탄);color:var(--바크);font-weight:400}
-.셔틀-강조박스{background:var(--아이보리2);border:.5px solid var(--탄);border-radius:2px;padding:7px 10px;margin-top:2px}
-.교통-구분선{grid-column:1/-1;height:.5px;background:var(--샌드)}
+.마음전하기-버튼{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;margin-top:4px;background:var(--아이보리2);border:.5px solid var(--샌드);border-radius:6px;font-size:13px;font-weight:300;color:var(--바크);cursor:pointer;letter-spacing:.04em;-webkit-tap-highlight-color:transparent}
+.마음전하기-버튼:active{background:var(--샌드)}
 
-/* 공유+계좌 — 교통 페이지 하단에 통합 */
-.공유-하단{
-  flex-shrink:0;
-  border-top:.5px solid var(--샌드);
-  padding:18px 22px 28px;
-  display:flex;flex-direction:column;align-items:center;
-}
-.공유-소제목{font-size:11px;font-weight:400;letter-spacing:.2em;color:var(--웜);margin-bottom:12px}
-.공유-버튼-행{display:flex;gap:8px;width:100%;margin-bottom:8px}
-.공유-버튼{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 4px;border-radius:2px;border:.5px solid var(--샌드);background:var(--아이보리2);cursor:pointer;font-size:11.5px;font-weight:300;color:var(--바크);-webkit-tap-highlight-color:transparent}
+/* ══ 계좌 팝업 ══ */
+#계좌팝업-오버레이{position:fixed;inset:0;z-index:7777;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
+#계좌팝업-오버레이.열림{display:flex}
+.계좌팝업{background:var(--아이보리);width:100%;max-width:430px;border-radius:16px 16px 0 0;padding:0 0 40px;max-height:85dvh;overflow-y:auto;animation:팝업올라오기 .3s ease}
+@keyframes 팝업올라오기{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.계좌팝업-핸들바{width:36px;height:4px;background:var(--샌드);border-radius:2px;margin:12px auto 16px}
+.계좌팝업-제목{font-size:13px;font-weight:400;letter-spacing:.12em;color:var(--웜);text-align:center;margin-bottom:4px}
+.계좌팝업-부제{font-size:11px;font-weight:300;color:var(--탄);text-align:center;margin-bottom:20px}
+.계좌팝업-그룹{padding:0 20px;margin-bottom:16px}
+.계좌팝업-그룹-라벨{font-size:10px;font-weight:400;letter-spacing:.16em;color:var(--탄);display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.계좌팝업-그룹-라벨::before,.계좌팝업-그룹-라벨::after{content:'';flex:1;height:.5px;background:var(--샌드)}
+.계좌팝업-항목{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--아이보리2);border-radius:6px;margin-bottom:8px;border:.5px solid var(--샌드)}
+.계좌팝업-항목-좌{flex:1}
+.계좌팝업-이름{font-size:13px;font-weight:400;color:var(--잉크);margin-bottom:2px}
+.계좌팝업-은행{font-size:11px;font-weight:300;color:var(--탄);margin-bottom:4px}
+.계좌팝업-번호{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--바크);letter-spacing:.06em}
+.계좌팝업-복사{flex-shrink:0;font-size:12px;font-weight:300;padding:8px 14px;border:.5px solid var(--탄);border-radius:4px;background:transparent;color:var(--바크);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.계좌팝업-복사:active{background:var(--샌드)}
+.계좌팝업-닫기{display:block;width:calc(100% - 40px);margin:8px 20px 0;padding:13px;background:var(--바크);color:var(--아이보리);border:none;border-radius:6px;font-size:13px;font-weight:300;letter-spacing:.08em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.계좌팝업-닫기:active{opacity:.8}
+
+/* ══ 마지막 페이지 ══ */
+.공유-마지막-페이지{background:var(--아이보리2);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.공유-마지막-내용{display:flex;flex-direction:column;align-items:center;width:100%;padding:0 28px}
+.공유-마지막-내용 .푸터-이름{font-size:20px;font-weight:400;color:var(--바크);letter-spacing:.08em;margin-bottom:4px}
+.공유-마지막-내용 .푸터-날짜{font-size:13px;font-weight:300;color:var(--웜);letter-spacing:.06em}
+.공유-구분{width:100%;height:.5px;background:var(--샌드);margin:28px 0 20px}
+.공유-소제목{font-size:11px;font-weight:400;letter-spacing:.2em;color:var(--웜);margin-bottom:16px;text-align:center}
+.공유-버튼-행{display:flex;gap:8px;width:100%}
+.공유-버튼{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 6px;border-radius:4px;border:.5px solid var(--샌드);background:var(--아이보리);cursor:pointer;font-size:12px;font-weight:300;color:var(--바크);-webkit-tap-highlight-color:transparent}
 .공유-버튼:active{background:var(--샌드)}
 .공유-버튼.카카오{background:#FAE100;border-color:#D4C000;color:#2A1500}
 .공유-버튼.카카오:active{background:#E8CC00}
-.공유-구분{width:100%;height:.5px;background:var(--샌드);margin:16px 0 14px}
-.계좌-소제목{font-size:12px;font-weight:400;letter-spacing:.12em;color:var(--웜);text-align:center;margin-bottom:3px}
-.계좌-부제{font-size:11px;font-weight:300;color:var(--탄);text-align:center;margin-bottom:12px}
-.계좌-아코디언{width:100%;display:flex;flex-direction:column;gap:7px}
-.계좌-그룹{border:.5px solid var(--샌드);border-radius:2px;overflow:hidden;background:var(--아이보리2)}
-.계좌-토글{width:100%;display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:transparent;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent;gap:12px}
-.계좌-토글:active{background:rgba(212,201,182,.3)}
-.계좌-토글-좌{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
-.계좌-토글-구분{font-size:10px;font-weight:400;letter-spacing:.14em;color:var(--탄)}
-.계좌-토글-이름{font-size:13px;font-weight:400;color:var(--바크)}
-.계좌-토글-힌트{font-size:10px;font-weight:300;color:var(--탄)}
-.계좌-화살표{width:18px;height:18px;flex-shrink:0;transition:transform .3s ease}
-.계좌-그룹.열림 .계좌-화살표{transform:rotate(180deg)}
-.계좌-본문{max-height:0;overflow:hidden;transition:max-height .35s ease}
-.계좌-그룹.열림 .계좌-본문{max-height:500px}
-.계좌-목록{padding:0 16px 12px}
-.계좌-항목{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:.5px solid rgba(212,201,182,.5)}
-.계좌-항목-좌{flex:1}
-.계좌-항목-이름{font-size:12px;font-weight:400;color:var(--잉크);margin-bottom:2px}
-.계좌-항목-은행{font-size:10px;font-weight:300;color:var(--탄);margin-bottom:3px}
-.계좌-항목-번호{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:var(--바크);letter-spacing:.06em}
-.계좌-복사{flex-shrink:0;font-size:11px;font-weight:300;padding:7px 12px;border:.5px solid var(--탄);border-radius:2px;background:transparent;color:var(--바크);cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
-.계좌-복사:active{background:var(--샌드)}
-
-/* ══ 8. 공유+푸터 마지막 페이지 ══ */
-.공유-마지막-페이지{background:var(--아이보리2);display:flex;flex-direction:column;align-items:center;justify-content:center}
-.공유-마지막-내용{display:flex;flex-direction:column;align-items:center;width:100%;padding:0 28px;gap:0}
-.공유-마지막-내용 .푸터-이름{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;font-weight:400;color:var(--바크);letter-spacing:.1em;margin-bottom:6px}
-.공유-마지막-내용 .푸터-날짜{font-size:13px;font-weight:300;color:var(--웜);letter-spacing:.1em;margin-bottom:0}
-.공유-마지막-내용 .공유-구분{width:100%;height:.5px;background:var(--샌드);margin:28px 0 20px}
-.공유-마지막-내용 .공유-소제목{font-size:11px;font-weight:400;letter-spacing:.2em;color:var(--웜);margin-bottom:16px}
-.공유-마지막-내용 .공유-버튼-행{display:flex;gap:8px;width:100%}
 
 /* 토스트 */
 .토스트{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--바크);color:var(--아이보리);font-size:13px;font-weight:300;padding:11px 22px;border-radius:2px;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;z-index:9999}
@@ -415,13 +424,18 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
     <div class="커버-배경"><img id="커버-이미지" src="" alt="커플 사진"></div>
     <div class="커버-그라데이션"></div>
     <div class="커버-내용">
-      <p class="커버-라벨">우리 결혼합니다</p>
-      <h1 class="커버-이름"><span id="신랑이름"></span><span class="커버-구분선"></span><span id="신부이름"></span></h1>
-      <p class="커버-영문">Kyunghwan &amp; Sujin</p>
-      <div class="커버-날짜-행">
-        <div class="커버-날짜-라인"></div>
-        <span id="커버날짜" class="커버-날짜-텍스트"></span>
-        <div class="커버-날짜-라인"></div>
+      <div class="커버-상단">
+        <p class="커버-라벨">우리 결혼합니다</p>
+        <div id="커버-디데이" class="커버-디데이"></div>
+      </div>
+      <div class="커버-하단">
+        <h1 class="커버-이름"><span id="신랑이름"></span><span class="커버-구분선"></span><span id="신부이름"></span></h1>
+        <p class="커버-영문">Kyunghwan &amp; Sujin</p>
+        <div class="커버-날짜-행">
+          <div class="커버-날짜-라인"></div>
+          <span id="커버날짜" class="커버-날짜-텍스트"></span>
+          <div class="커버-날짜-라인"></div>
+        </div>
       </div>
     </div>
     <div class="커버-스크롤">
@@ -446,8 +460,6 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
     <p class="인사말-시-출처">— 이문재, 농담</p>
     <div class="인사말-구분-점선"></div>
     <p class="인사말-본문">
-      맛있는 것을 먹고 좋은 풍경을 볼 때면<br>
-      서로가 가장 먼저 생각나는 사람이 되었습니다.<br><br>
       혼자 걷던 길의 작은 즐거움들을<br>
       이제 둘이 함께 나누려 합니다.<br><br>
       저희 두 사람의 다정한 일상이 시작되는 날,<br>
@@ -494,14 +506,7 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
     <div class="라이트박스-카운터" id="라이트박스카운터"></div>
   </div>
 
-  <!-- 4. 디데이 -->
-  <section class="페이지-섹션 디데이-페이지">
-    <div class="디데이-숫자" id="디데이숫자">—</div>
-    <div class="디데이-라벨">결혼식까지</div>
-    <div class="디데이-날짜" id="디데이날짜"></div>
-    <div class="디데이-구분선"></div>
-    <div class="디데이-장소" id="디데이장소"></div>
-  </section>
+  <!-- 4. 디데이 → 커버로 이동, 이 섹션 제거 -->
 
   <!-- 5. 오시는 길 -->
   <section class="페이지-섹션 지도-페이지">
@@ -535,74 +540,87 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
     </div>
   </section>
 
-  <!-- 6. 교통 + 공유 + 계좌 통합 -->
+  <!-- 6. 교통 안내 (풀 페이지) -->
   <section class="페이지-섹션 교통-페이지">
-    <div class="교통-상단">
+    <div class="교통-컨텐츠">
       <p class="교통-소제목">교통 안내</p>
-      <div class="교통-그리드">
-        <div class="교통-블록">
-          <div class="교통-유형-행">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="12" rx="2.5" stroke="#332618" stroke-width="1.5"/><circle cx="7" cy="18" r="1.8" fill="#332618"/><circle cx="17" cy="18" r="1.8" fill="#332618"/><path d="M2 10h20M8 6V4h8v2" stroke="#332618" stroke-width="1.2" stroke-linecap="round"/></svg>
-            <span class="교통-유형-이름">셔틀버스</span>
-          </div>
-          <div class="셔틀-강조박스">
-            <div class="교통-내용-텍스트"><b>기흥역 1번 출구</b><br>셔틀버스 승차<br>수인분당선·에버라인<br>기흥역 하차 후 이용</div>
-          </div>
+
+      <!-- 셔틀버스 -->
+      <div class="교통-항목-카드">
+        <div class="교통-항목-헤더">
+          <div class="교통-항목-아이콘"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="12" rx="2.5" stroke="#5A4E42" stroke-width="1.5"/><circle cx="7" cy="18" r="1.8" fill="#5A4E42"/><circle cx="17" cy="18" r="1.8" fill="#5A4E42"/><path d="M2 10h20M8 6V4h8v2" stroke="#5A4E42" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <span class="교통-항목-제목">셔틀버스</span>
+          <span class="교통-항목-배지">15분 간격</span>
         </div>
-        <div class="교통-블록">
-          <div class="교통-유형-행">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="16" rx="3" stroke="#332618" stroke-width="1.5"/><circle cx="8.5" cy="15" r="1.5" fill="#332618"/><circle cx="15.5" cy="15" r="1.5" fill="#332618"/><path d="M4 10h16M8 3v4h8V3" stroke="#332618" stroke-width="1.2" stroke-linecap="round"/><path d="M8 21l-2-2M16 21l2-2" stroke="#332618" stroke-width="1.4" stroke-linecap="round"/></svg>
-            <span class="교통-유형-이름">지하철</span>
-          </div>
-          <div class="교통-내용-텍스트">
-            수인분당선·에버라인<br><b>기흥역</b> 하차<br>
-            <b>2번 출구</b> 도보 400m<br>
-            <b>1번 출구</b> 셔틀 이용
-          </div>
+        <div class="교통-세부">
+          <div class="교통-세부-행"><b>기흥역 1번 출구</b> 승차</div>
         </div>
-        <div class="교통-구분선"></div>
-        <div class="교통-블록">
-          <div class="교통-유형-행">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="#332618" stroke-width="1.5"/><circle cx="7.5" cy="19" r="1.5" fill="#332618"/><circle cx="16.5" cy="19" r="1.5" fill="#332618"/><path d="M3 9h18M9 5V3h6v2" stroke="#332618" stroke-width="1.2" stroke-linecap="round"/></svg>
-            <span class="교통-유형-이름">버스</span>
-          </div>
-          <div class="교통-내용-텍스트">
-            세종그랑시아 정류장<br>
-            <span class="노선태그 강조">690</span><span class="노선태그">17</span><span class="노선태그">18</span><span class="노선태그">28</span><span class="노선태그 강조">8165</span><br>
-            기흥구청 정류장<br>
-            <span class="노선태그 강조">99</span><span class="노선태그">21</span><span class="노선태그">21A</span><span class="노선태그">36</span><br>
-            기흥역 정류장<br>
-            <span class="노선태그 강조">10</span><span class="노선태그 강조">55</span><span class="노선태그 강조">66</span><span class="노선태그 강조">820</span><span class="노선태그">5000A</span>
-          </div>
+        <div class="셔틀-시간-행">
+          <span class="셔틀-시간-뱃지">10:10</span>
+          <span class="셔틀-시간-뱃지">10:25</span>
+          <span class="셔틀-시간-뱃지">10:40</span>
         </div>
-        <div class="교통-블록">
-          <div class="교통-유형-행">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 17H3V9l2-4h14l2 4v8h-2" stroke="#332618" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7.5" cy="17" r="2" stroke="#332618" stroke-width="1.5"/><circle cx="16.5" cy="17" r="2" stroke="#332618" stroke-width="1.5"/><path d="M5 13h14" stroke="#332618" stroke-width="1.2" stroke-linecap="round"/></svg>
-            <span class="교통-유형-이름">자가용·주차</span>
+      </div>
+
+      <!-- 지하철 -->
+      <div class="교통-항목-카드">
+        <div class="교통-항목-헤더">
+          <div class="교통-항목-아이콘"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="16" rx="3" stroke="#5A4E42" stroke-width="1.5"/><circle cx="8.5" cy="15" r="1.5" fill="#5A4E42"/><circle cx="15.5" cy="15" r="1.5" fill="#5A4E42"/><path d="M4 10h16M8 3v4h8V3" stroke="#5A4E42" stroke-width="1.2" stroke-linecap="round"/><path d="M8 21l-2-2M16 21l2-2" stroke="#5A4E42" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+          <span class="교통-항목-제목">지하철</span>
+        </div>
+        <div class="교통-세부">
+          <div class="교통-세부-행">수인분당선 · 에버라인 <b>기흥역</b> 하차</div>
+          <div class="교통-세부-행"><b>도보 이용</b> — 2번 출구, 400m (15분)</div>
+          <div class="교통-세부-행"><b>셔틀 이용</b> — 1번 출구 승차 (5분)</div>
+        </div>
+      </div>
+
+      <!-- 버스 -->
+      <div class="교통-항목-카드">
+        <div class="교통-항목-헤더">
+          <div class="교통-항목-아이콘"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="#5A4E42" stroke-width="1.5"/><circle cx="7.5" cy="19" r="1.5" fill="#5A4E42"/><circle cx="16.5" cy="19" r="1.5" fill="#5A4E42"/><path d="M3 9h18M9 5V3h6v2" stroke="#5A4E42" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+          <span class="교통-항목-제목">버스</span>
+          <span class="교통-항목-배지">기흥역 하차</span>
+        </div>
+        <div>
+          <div class="노선그룹">
+            <div class="노선그룹-라벨">일반버스</div>
+            <span class="노선태그 강조">10</span><span class="노선태그 강조">55</span><span class="노선태그 강조">66</span><span class="노선태그 강조">66-4</span><span class="노선태그 강조">94</span><span class="노선태그 강조">690</span><span class="노선태그 강조">820</span>
           </div>
-          <div class="교통-내용-텍스트">
-            내비 <b>"기흥ICT밸리"</b><br>
-            주소 <b>기흥로 58-1</b><br><br>
-            주차 <b>1,600대</b><br>
-            <b>토·일 방문객 무료</b><br>
-            방문객 <b>B3~B5층</b>
+          <div class="노선그룹">
+            <div class="노선그룹-라벨">직행좌석</div>
+            <span class="노선태그">5000A</span><span class="노선태그">5000B</span><span class="노선태그">5001</span><span class="노선태그">5003A</span><span class="노선태그">5003B</span><span class="노선태그">5600</span>
+          </div>
+          <div class="노선그룹">
+            <div class="노선그룹-라벨">시외버스</div>
+            <span class="노선태그">8326</span><span class="노선태그">8342</span><span class="노선태그">8343</span><span class="노선태그">8366</span><span class="노선태그">8543</span><span class="노선태그">8839</span><span class="노선태그">8862</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 계좌만 교통 하단에 -->
-    <div class="공유-하단">
-      <p class="계좌-소제목">마음 전하기</p>
-      <p class="계좌-부제">축하와 격려에 깊이 감사드립니다</p>
-      <div class="계좌-아코디언" id="계좌아코디언"></div>
+      <!-- 마음전하기 버튼 -->
+      <button class="마음전하기-버튼" onclick="계좌팝업열기()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="#5A4E42" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        마음 전하기
+      </button>
     </div>
   </section>
 
-  <!-- 7. 공유 + 푸터 -->
+  <!-- 계좌 팝업 -->
+  <div id="계좌팝업-오버레이" onclick="if(event.target===this)계좌팝업닫기()">
+    <div class="계좌팝업">
+      <div class="계좌팝업-핸들바"></div>
+      <p class="계좌팝업-제목">마음 전하기</p>
+      <p class="계좌팝업-부제">축하와 격려에 깊이 감사드립니다</p>
+      <div id="계좌팝업-내용"></div>
+      <button class="계좌팝업-닫기" onclick="계좌팝업닫기()">닫기</button>
+    </div>
+  </div>
+
+  <!-- 7. 마지막 — 이름 + 공유 -->
   <section class="페이지-섹션 공유-마지막-페이지">
     <div class="공유-마지막-내용">
-      <div class="푸터-이름">Kyunghwan &amp; Sujin</div>
+      <div class="푸터-이름" id="푸터이름"></div>
       <div class="푸터-날짜">2026년 10월 17일 토요일</div>
       <div class="공유-구분"></div>
       <p class="공유-소제목">청첩장 공유</p>
@@ -612,11 +630,11 @@ body{width:100%;height:100%;background:#000;font-family:'Noto Serif KR',serif;-w
           카카오톡
         </button>
         <button class="공유-버튼" onclick="링크복사()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#332618" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#332618" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#5A4E42" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#5A4E42" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           링크 복사
         </button>
         <button class="공유-버튼" onclick="더보기공유()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" stroke="#332618" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="16 6 12 2 8 6" stroke="#332618" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="2" x2="12" y2="15" stroke="#332618" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" stroke="#5A4E42" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="16 6 12 2 8 6" stroke="#5A4E42" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="2" x2="12" y2="15" stroke="#5A4E42" stroke-width="1.5" stroke-linecap="round"/></svg>
           더보기
         </button>
       </div>
@@ -644,14 +662,15 @@ function 설정적용() {
   $('인사말서명').textContent = C.신랑 + '·' + C.신부 + ' 올림';
   $('지도예식장').textContent = C.예식장 + ' · ' + C.홀;
   $('지도주소').innerHTML     = C.주소 + '<br>' + C.주소상세;
-  $('디데이날짜').textContent = C.날짜전체 + ' ' + C.시간;
-  $('디데이장소').innerHTML   = C.예식장 + '<br>' + C.홀;
+  $('푸터이름').textContent   = C.신랑 + ' · ' + C.신부;
 
+  // D-Day 배지 (커버)
   const 차이 = Math.ceil((new Date(C.예식일시) - new Date()) / 86400000);
-  $('디데이숫자').textContent = 차이 > 0 ? 'D-' + 차이 : 차이 === 0 ? 'D-Day' : 'D+' + Math.abs(차이);
+  const 디데이텍스트 = 차이 > 0 ? 'D-' + 차이 : 차이 === 0 ? 'D-Day' : 'D+' + Math.abs(차이);
+  $('커버-디데이').textContent = '결혼식까지  ' + 디데이텍스트;
 
   갤러리초기화(C.갤러리사진);
-  계좌렌더(C);
+  계좌팝업렌더(C);
 }
 
 /* ── 갤러리 — 3열 4행 페이지 방식 + 라이트박스 ── */
@@ -797,75 +816,77 @@ function 라이트박스위치업데이트(애니메이션) {
   });
 })();
 
-/* ── 계좌 ── */
-function 계좌렌더(C) {
-  const 감싸기 = document.getElementById('계좌아코디언');
+/* ── 계좌 팝업 ── */
+function 계좌팝업렌더(C) {
+  const 내용 = document.getElementById('계좌팝업-내용');
   const 그룹들 = [];
   if (C.신랑계좌 && C.신랑계좌.length) 그룹들.push({구분:'신랑측', 목록:C.신랑계좌});
   if (C.신부계좌 && C.신부계좌.length) 그룹들.push({구분:'신부측', 목록:C.신부계좌});
-  감싸기.innerHTML = 그룹들.map((g, i) => `
-    <div class="계좌-그룹" id="계좌그룹-${i}">
-      <button class="계좌-토글" onclick="계좌토글(${i})">
-        <div class="계좌-토글-좌">
-          <span class="계좌-토글-구분">${g.구분}</span>
-          <span class="계좌-토글-이름">${g.목록.map(a=>a.이름).join(' · ')}</span>
-          <span class="계좌-토글-힌트">눌러서 계좌번호 확인</span>
-        </div>
-        <span class="계좌-화살표"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 6.5l5 5 5-5" stroke="#9E8E78" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      </button>
-      <div class="계좌-본문">
-        <div class="계좌-목록">
-          ${g.목록.map(a=>`
-            <div class="계좌-항목">
-              <div class="계좌-항목-좌">
-                <div class="계좌-항목-이름">${a.이름}</div>
-                <div class="계좌-항목-은행">${a.은행}</div>
-                <div class="계좌-항목-번호">${a.번호}</div>
-              </div>
-              <button class="계좌-복사" onclick="텍스트복사('${a.번호}','복사되었습니다 ✓')">복사</button>
-            </div>`).join('')}
-        </div>
-      </div>
+  내용.innerHTML = 그룹들.map(g => `
+    <div class="계좌팝업-그룹">
+      <div class="계좌팝업-그룹-라벨">${g.구분}</div>
+      ${g.목록.map(a => `
+        <div class="계좌팝업-항목">
+          <div class="계좌팝업-항목-좌">
+            <div class="계좌팝업-이름">${a.이름}</div>
+            <div class="계좌팝업-은행">${a.은행}</div>
+            <div class="계좌팝업-번호">${a.번호}</div>
+          </div>
+          <button class="계좌팝업-복사" onclick="텍스트복사('${a.번호}','복사되었습니다 ✓')">복사</button>
+        </div>`).join('')}
     </div>`).join('');
 }
-function 계좌토글(i) { document.getElementById('계좌그룹-'+i).classList.toggle('열림'); }
 
-/* ── 로딩 — 동영상 전체 재생 후 종료 ── */
+function 계좌팝업열기() {
+  document.getElementById('계좌팝업-오버레이').classList.add('열림');
+  document.getElementById('페이지').style.overflow = 'hidden';
+}
+function 계좌팝업닫기() {
+  document.getElementById('계좌팝업-오버레이').classList.remove('열림');
+  document.getElementById('페이지').style.overflow = '';
+}
+
+/* ── 로딩 — 동영상 페이드아웃 후 자연스럽게 전환 ── */
 let 로딩완료 = false;
 
 function 로딩종료() {
   if (로딩완료) return;
   로딩완료 = true;
-  document.getElementById('로딩화면').classList.add('숨김');
-  document.getElementById('페이지').classList.add('준비완료');
-  document.body.style.overflow = '';
+  // 로딩화면 페이드아웃 (0.8초)
+  const 로딩 = document.getElementById('로딩화면');
+  로딩.style.transition = 'opacity 0.8s ease';
+  로딩.style.opacity = '0';
+  setTimeout(() => {
+    로딩.classList.add('숨김');
+    document.getElementById('페이지').classList.add('준비완료');
+    document.body.style.overflow = '';
+  }, 800);
 }
 
 (function() {
-  const 로딩   = document.getElementById('로딩화면');
   const 비디오  = document.getElementById('로딩-비디오');
   const 건너뛰기 = document.getElementById('건너뛰기');
   document.body.style.overflow = 'hidden';
 
-  // 비디오 표시
   비디오.addEventListener('canplay', () => { 비디오.style.opacity = '1'; });
+
   비디오.addEventListener('loadedmetadata', () => {
-    비디오.loop = false;          // 한 번만 재생
+    비디오.loop = false;
     비디오.play().catch(() => {});
     // 4초 후 건너뛰기 버튼 표시
     setTimeout(() => { 건너뛰기.classList.add('보임'); }, 4000);
+
+    // 동영상 종료 0.8초 전에 미리 페이드아웃 시작
+    const 재생시간 = 비디오.duration;
+    if (재생시간 && 재생시간 > 0.8) {
+      setTimeout(() => { 로딩종료(); }, Math.max((재생시간 - 0.8) * 1000, 1000));
+    }
   });
 
-  // 동영상 재생 완료 → 자동 종료
-  비디오.addEventListener('ended', () => {
-    // 커버 이미지 로드 대기
-    const 커버 = document.getElementById('커버-이미지');
-    if (커버.complete) 로딩종료();
-    else 커버.addEventListener('load', 로딩종료);
-    커버.addEventListener('error', 로딩종료);
-  });
+  // ended 이벤트도 안전장치로 유지
+  비디오.addEventListener('ended', () => { 로딩종료(); });
 
-  // 안전장치: 최대 30초 후 강제 종료 (동영상 실패 시)
+  // 안전장치: 최대 30초 후 강제 종료
   setTimeout(로딩종료, 30000);
 
   // 비디오 로드 실패 시 3초 후 종료
