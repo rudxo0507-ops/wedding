@@ -78,11 +78,13 @@ const CONFIG = {
     "gallery23.jpg",
     "gallery24.jpg",
     "gallery25.jpg",
-    // "gallery26.jpg",
-    // "gallery27.jpg",
-    // "gallery28.jpg",
-    // "gallery29.jpg",
-    // "gallery30.jpg",
+    "gallery26.jpg",
+    "gallery27.jpg",
+    "gallery28.jpg",
+    "gallery29.jpg",
+    "gallery30.jpg",
+    "gallery31.jpg",
+    "gallery32.jpg",
   ],
 
   약도이미지: "map.jpg",
@@ -91,7 +93,6 @@ const CONFIG = {
   신랑계좌: [
     { 이름:"고경환", 은행:"토스뱅크",  번호:"1000-5219-7407" },
     { 이름:"고광연", 은행:"국민은행",  번호:"526501-01-078648" },
-    { 이름:"염은숙", 은행:"국민은행",  번호:"047-24-0283-569" },
   ],
   신부계좌: [
     { 이름:"박수진", 은행:"토스뱅크", 번호:"1000-9376-8558" },
@@ -159,6 +160,30 @@ body{width:100%;height:100%;background:#000;font-family:'NumPretendard','Noto Se
 #페이지::-webkit-scrollbar{display:none}
 #페이지.준비완료{opacity:1}
 .페이지-섹션{width:100%;height:100dvh;scroll-snap-align:start;scroll-snap-stop:always;position:relative;overflow:hidden;flex-shrink:0}
+
+/* 우측 페이지 인디케이터 */
+.페이지인디케이터{
+  position:fixed;top:50%;right:10px;
+  right:max(10px,calc((100vw - 430px)/2 + 10px));
+  transform:translateY(-50%);z-index:5000;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  opacity:0;pointer-events:none;transition:opacity .3s ease;
+}
+.페이지인디케이터.표시{opacity:1}
+.페이지인디케이터-번호{
+  min-width:34px;padding:8px 5px;border-radius:999px;
+  background:rgba(46,38,32,.58);color:#fff;
+  border:.5px solid rgba(255,255,255,.28);
+  box-shadow:0 2px 10px rgba(0,0,0,.18);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  text-align:center;font-size:11px;font-weight:300;line-height:1.1;
+  font-family:'NumPretendard','Noto Serif KR',serif;letter-spacing:.02em;
+}
+.페이지인디케이터-현재{display:block;font-size:15px;font-weight:500;line-height:1;margin-bottom:1px}
+.페이지인디케이터-전체{display:block;font-size:10px;opacity:.78;line-height:1;margin-top:1px}
+.페이지인디케이터-점들{display:flex;flex-direction:column;align-items:center;gap:5px}
+.페이지인디케이터-점{width:4px;height:4px;border-radius:50%;background:rgba(90,78,66,.35);transition:height .2s,background .2s}
+.페이지인디케이터-점.활성{height:14px;border-radius:999px;background:rgba(90,78,66,.95)}
 
 /* ══ 1. 커버 ══ */
 .커버-배경{position:absolute;inset:0;background:#111}
@@ -419,6 +444,7 @@ body{width:100%;height:100%;background:#000;font-family:'NumPretendard','Noto Se
 </div>
 
 <div id="토스트" class="토스트"></div>
+<div id="페이지인디케이터" class="페이지인디케이터" aria-label="현재 페이지 위치"></div>
 <div id="페이지">
 
   <!-- 1. 커버 -->
@@ -699,7 +725,7 @@ function 랜덤섞기(arr) {
 }
 
 function 갤러리빌드(목록) {
-  갤러리목록 = 랜덤섞기(목록);
+  갤러리목록 = 목록;
   const 총페이지 = Math.ceil(갤러리목록.length / 페이지당장수);
 
   // 서브타이틀
@@ -844,6 +870,42 @@ function 계좌팝업닫기() {
   document.getElementById('페이지').style.overflow = '';
 }
 
+/* ── 우측 페이지 인디케이터 ── */
+let 전체섹션수 = 0;
+
+function 페이지인디케이터초기화() {
+  const 페이지 = document.getElementById('페이지');
+  const 인디케이터 = document.getElementById('페이지인디케이터');
+  if (!페이지 || !인디케이터) return;
+
+  전체섹션수 = document.querySelectorAll('#페이지 > .페이지-섹션').length;
+  인디케이터.innerHTML = `
+    <div class="페이지인디케이터-번호">
+      <span id="현재페이지표시" class="페이지인디케이터-현재">1</span>
+      <span id="전체페이지표시" class="페이지인디케이터-전체">/${전체섹션수}</span>
+    </div>
+    <div class="페이지인디케이터-점들">
+      ${Array.from({length:전체섹션수}, (_, i) => `<span class="페이지인디케이터-점${i===0?' 활성':''}"></span>`).join('')}
+    </div>`;
+
+  페이지.addEventListener('scroll', 페이지인디케이터업데이트, {passive:true});
+  window.addEventListener('resize', 페이지인디케이터업데이트);
+  페이지인디케이터업데이트();
+}
+
+function 페이지인디케이터업데이트() {
+  const 페이지 = document.getElementById('페이지');
+  if (!페이지 || !전체섹션수) return;
+
+  const 현재 = Math.min(전체섹션수, Math.max(1, Math.round(페이지.scrollTop / 페이지.clientHeight) + 1));
+  const 현재표시 = document.getElementById('현재페이지표시');
+  if (현재표시) 현재표시.textContent = 현재;
+
+  document.querySelectorAll('.페이지인디케이터-점').forEach((점, i) => {
+    점.classList.toggle('활성', i === 현재 - 1);
+  });
+}
+
 /* ── 로딩 — 동영상 페이드아웃 후 자연스럽게 전환 ── */
 let 로딩완료 = false;
 
@@ -857,6 +919,8 @@ function 로딩종료() {
   setTimeout(() => {
     로딩.classList.add('숨김');
     document.getElementById('페이지').classList.add('준비완료');
+    document.getElementById('페이지인디케이터').classList.add('표시');
+    페이지인디케이터업데이트();
     document.body.style.overflow = '';
   }, 800);
 }
@@ -920,6 +984,7 @@ function 네비열기(e,scheme,ios,android) {
 }
 
 설정적용();
+페이지인디케이터초기화();
 </script>
 </body>
 </html>
