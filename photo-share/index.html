@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#fffdf9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="format-detection" content="telephone=no">
+  <title>고경환 · 박수진 Wedding Photo Share</title>
+  <script src="./config.js"></script>
+  <style>
+    :root{
+      --paper:#fffdf9;--ink:#282521;--muted:#7c766e;--line:#d8d0c5;
+      --accent:#6f7f69;--soft:#e9eee6;--card:#f6f2eb;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;min-height:100%;background:var(--paper);color:var(--ink);overflow-x:hidden}
+    body{
+      font-family:Pretendard,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+      -webkit-font-smoothing:antialiased;touch-action:manipulation;
+    }
+    button,input,textarea{font:inherit}
+    button{-webkit-tap-highlight-color:transparent}
+    .app{width:100%;min-height:100dvh;background:var(--paper)}
+    .screen{
+      display:none;min-height:100dvh;
+      padding:max(28px,env(safe-area-inset-top)) 20px max(24px,env(safe-area-inset-bottom));
+    }
+    .screen.active{display:flex;flex-direction:column}
+    .eyebrow{
+      font-family:Georgia,"Times New Roman",serif;text-align:center;
+      font-size:11px;letter-spacing:.21em;color:#756e66;margin-top:4px
+    }
+    .names{
+      font-family:Georgia,"Times New Roman",serif;text-align:center;
+      font-size:clamp(30px,9vw,38px);font-weight:400;line-height:1.15;margin:14px 0 0
+    }
+    .date{text-align:center;font-size:12px;letter-spacing:.12em;color:var(--muted);margin-top:8px}
+    .thanks{
+      text-align:center;margin:18px auto 0;max-width:290px;
+      font-size:13px;line-height:1.8;color:#5f5952;word-break:keep-all
+    }
+    .ornament{display:flex;align-items:center;gap:12px;width:64%;margin:24px auto 22px;color:#a69d92}
+    .ornament:before,.ornament:after{content:"";height:1px;background:var(--line);flex:1}
+    .hero{text-align:center}
+    .hero h1{
+      font-family:Georgia,"Times New Roman",serif;font-size:clamp(27px,8vw,34px);
+      font-weight:400;line-height:1.35;margin:0 0 14px;word-break:keep-all
+    }
+    .hero p{margin:0 auto;max-width:310px;font-size:13px;line-height:1.8;color:var(--muted);word-break:keep-all}
+    .photo-card{
+      margin:26px 0 20px;padding:22px 18px;text-align:center;border-radius:20px;
+      background:linear-gradient(145deg,#eef1e9,#faf5ef);border:1px solid rgba(111,127,105,.16)
+    }
+    .photo-card .icon{
+      width:50px;height:50px;border-radius:50%;display:grid;place-items:center;
+      margin:0 auto 12px;background:#fff;border:1px solid rgba(40,37,33,.12);font-size:22px
+    }
+    .photo-card strong{display:block;font-size:15px;margin-bottom:6px}
+    .photo-card small{font-size:12px;line-height:1.65;color:var(--muted)}
+    .spacer{flex:1}
+    .btn{
+      width:100%;min-height:58px;border-radius:16px;font-size:16px;cursor:pointer;
+      transition:transform .12s ease;border:0
+    }
+    .btn:active{transform:scale(.985)}
+    .btn.primary{background:var(--ink);color:#fff;font-weight:600}
+    .btn.primary:disabled{opacity:.45}
+    .btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line);margin-top:10px}
+    .micro{text-align:center;margin-top:10px;font-size:10.5px;line-height:1.6;color:#8d867e}
+    .top{
+      position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
+      margin:-8px -4px 22px;padding:8px 4px 10px;
+      background:linear-gradient(to bottom,rgba(255,253,249,.98) 72%,rgba(255,253,249,0))
+    }
+    .back{min-height:42px;border:0;background:transparent;color:var(--ink);padding:8px 4px}
+    .step{font-size:12px;color:var(--muted);letter-spacing:.08em}
+    h2{
+      font-family:Georgia,"Times New Roman",serif;font-size:27px;font-weight:400;
+      line-height:1.35;margin:0 0 8px
+    }
+    .desc{font-size:13px;line-height:1.75;color:var(--muted);margin:0}
+    .picker{
+      margin-top:22px;min-height:180px;padding:22px 18px;border:1.5px dashed #bbb2a7;
+      border-radius:20px;background:rgba(255,255,255,.7);display:grid;place-items:center;text-align:center
+    }
+    .picker .plus{
+      width:52px;height:52px;border-radius:50%;display:grid;place-items:center;
+      margin:0 auto 12px;background:#fff;border:1px solid #bdb5aa;font-size:28px
+    }
+    .picker strong{font-size:15px}
+    .picker p{font-size:12px;line-height:1.7;color:var(--muted);margin:8px 0 0}
+    #fileInput{display:none}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:14px}
+    .preview{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#eee}
+    .preview img,.preview video{width:100%;height:100%;object-fit:cover;display:block}
+    .preview .video{
+      position:absolute;left:6px;bottom:6px;padding:4px 7px;border-radius:999px;
+      background:rgba(0,0,0,.62);color:#fff;font-size:10px
+    }
+    .preview button{
+      position:absolute;top:4px;right:4px;width:28px;height:28px;border:0;border-radius:50%;
+      background:rgba(0,0,0,.62);color:#fff;font-size:16px
+    }
+    .summary{
+      display:flex;justify-content:space-between;align-items:center;margin:20px 0 14px;
+      padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+      color:var(--muted);font-size:13px
+    }
+    .summary strong{color:var(--ink)}
+    .form{display:grid;gap:14px;margin-top:22px}
+    label.field{display:block;font-size:12px;color:#615b54}
+    .field input,.field textarea{
+      width:100%;margin-top:7px;border:1px solid var(--line);border-radius:14px;
+      background:#fff;padding:14px;font-size:16px;color:var(--ink);outline:none
+    }
+    .field textarea{min-height:110px;resize:vertical;line-height:1.55}
+    .note{
+      margin-top:18px;padding:13px 14px;border-radius:14px;background:#f2eee8;
+      color:#6f675f;font-size:11px;line-height:1.7
+    }
+    .status{display:none;text-align:center;margin-top:20px}
+    .status strong{display:block;font-size:16px;margin-bottom:4px}
+    .detail{font-size:11px;color:var(--muted);word-break:break-all}
+    .bar-wrap{display:none;height:8px;margin:9px 0 16px;border-radius:999px;overflow:hidden;background:#ece6dd}
+    .bar{height:100%;width:0;background:var(--accent);transition:width .15s ease}
+    .done{justify-content:center;text-align:center}
+    .check{
+      width:78px;height:78px;border-radius:50%;display:grid;place-items:center;margin:0 auto 24px;
+      background:var(--soft);color:var(--accent);font-family:Georgia,serif;font-size:36px
+    }
+    .done h2{font-size:29px}
+    .done p{max-width:300px;margin:0 auto;color:var(--muted);font-size:13px;line-height:1.9}
+    .signature{
+      font-family:Georgia,"Times New Roman",serif;margin-top:28px;font-style:italic;
+      color:#676058;font-size:18px
+    }
+    #bridge{position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;opacity:0;border:0;pointer-events:none}
+    @media(max-width:360px){
+      .screen{padding-left:16px;padding-right:16px}
+      .names{font-size:29px}.hero h1{font-size:26px}
+    }
+  </style>
+</head>
+<body>
+<main class="app">
+  <section id="home" class="screen active">
+    <div class="eyebrow">WEDDING PHOTO SHARE</div>
+    <div id="names" class="names">고경환 · 박수진</div>
+    <div id="date" class="date">2026. 10. 17</div>
+    <div class="thanks">저희의 소중한 날을 함께해주셔서 감사합니다.</div>
+    <div class="ornament">✦</div>
+    <div class="hero">
+      <h1>우리의 오늘을<br>당신의 시선으로 담아주세요.</h1>
+      <p>신랑·신부가 보지 못한 오늘의 모습을 찍으셨나요?<br>여러분의 사진과 영상을 선물해주세요.</p>
+    </div>
+    <div class="photo-card">
+      <div class="icon">⌁</div>
+      <strong>사진과 영상으로 축하를 남겨주세요</strong>
+      <small>휴대폰 앨범에서 여러 개를 한 번에 선택할 수 있어요.</small>
+    </div>
+    <div class="spacer"></div>
+    <button id="open" class="btn primary">사진 · 영상 선택하기</button>
+    <div class="micro">업로드한 파일은 신랑·신부의 비공개 Google Drive에 저장됩니다.</div>
+  </section>
+
+  <section id="select" class="screen">
+    <div class="top"><button class="back" data-go="home">← 이전</button><span class="step">1 / 2</span></div>
+    <h2>사진과 영상을 선택해주세요</h2>
+    <p class="desc">한 번에 최대 50개까지 선택할 수 있습니다.<br>동영상에는 별도의 웹앱 용량 제한을 두지 않습니다.</p>
+    <label class="picker" for="fileInput">
+      <div>
+        <div class="plus">＋</div>
+        <strong>사진 · 영상 선택</strong>
+        <p>휴대폰 앨범에서 파일을 골라주세요.</p>
+      </div>
+    </label>
+    <input id="fileInput" type="file" accept="image/*,video/*" multiple>
+    <div id="grid" class="grid"></div>
+    <div class="summary"><span>선택한 파일</span><strong><span id="count">0</span>개</strong></div>
+    <button id="next" class="btn primary" disabled>다음</button>
+  </section>
+
+  <section id="details" class="screen">
+    <div class="top"><button class="back" data-go="select">← 이전</button><span class="step">2 / 2</span></div>
+    <h2>마지막으로 확인해주세요</h2>
+    <p class="desc">이름과 한마디는 선택사항입니다.<br>비워두어도 업로드할 수 있습니다.</p>
+    <div class="form">
+      <label class="field">이름 또는 별명
+        <input id="guest" maxlength="30" placeholder="예: 신부 친구, 회사 동료">
+      </label>
+      <label class="field">신랑·신부에게 한마디
+        <textarea id="message" maxlength="200" placeholder="축하 메시지를 남겨주세요."></textarea>
+      </label>
+    </div>
+    <div class="note">업로드 중에는 페이지를 닫지 말아주세요. 대용량 동영상은 네트워크 상태에 따라 시간이 오래 걸릴 수 있습니다.</div>
+    <div class="spacer"></div>
+    <div id="status" class="status"><strong id="statusTitle">0 / 0 업로드 준비중</strong><div id="detail" class="detail">0%</div></div>
+    <div id="barWrap" class="bar-wrap"><div id="bar" class="bar"></div></div>
+    <button id="send" class="btn primary">사진 · 영상 보내기</button>
+  </section>
+
+  <section id="done" class="screen done">
+    <div class="check">✓</div>
+    <h2>소중한 사진 감사합니다.</h2>
+    <p>오늘을 함께 기록해주셔서 감사합니다.<br>보내주신 사진은 신랑·신부에게 소중히 전달됩니다.</p>
+    <div id="signature" class="signature">고경환 &amp; 박수진</div>
+    <div class="spacer"></div>
+    <button id="more" class="btn secondary">사진 · 영상 더 보내기</button>
+  </section>
+</main>
+
+<iframe id="bridge" title="upload bridge" aria-hidden="true"></iframe>
+
+<script>
+"use strict";
+
+const CFG = window.WEDDING_CONFIG || {};
+const MAX_FILES = Number(CFG.maxFiles || 50);
+const CHUNK = Number(CFG.chunkSizeMb || 32) * 1024 * 1024;
+let files = [];
+let completed = new Set();
+let uploading = false;
+
+const $ = id => document.getElementById(id);
+
+function show(id){
+  document.querySelectorAll(".screen").forEach(el=>el.classList.remove("active"));
+  $(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function key(file){ return [file.name,file.size,file.lastModified].join("::"); }
+function allowed(file){ return file.type.startsWith("image/") || file.type.startsWith("video/"); }
+function mime(file){ return file.type || "application/octet-stream"; }
+function sizeText(bytes){
+  const mb=bytes/1024/1024;
+  return mb<1024 ? mb.toFixed(mb>=100?0:1)+" MB" : (mb/1024).toFixed(2)+" GB";
+}
+
+function render(){
+  const grid=$("grid"); grid.innerHTML="";
+  files.forEach((file,i)=>{
+    const box=document.createElement("div"); box.className="preview";
+    const url=URL.createObjectURL(file);
+    if(file.type.startsWith("video/")){
+      const v=document.createElement("video"); v.src=url; v.muted=true; v.playsInline=true; v.preload="metadata";
+      v.onloadedmetadata=()=>URL.revokeObjectURL(url); box.appendChild(v);
+      const badge=document.createElement("span"); badge.className="video"; badge.textContent="VIDEO"; box.appendChild(badge);
+    }else{
+      const img=document.createElement("img"); img.src=url; img.alt="선택 사진 "+(i+1);
+      img.onload=()=>URL.revokeObjectURL(url); box.appendChild(img);
+    }
+    const x=document.createElement("button"); x.type="button"; x.textContent="×";
+    x.onclick=()=>{ files.splice(i,1); completed.clear(); render(); };
+    box.appendChild(x); grid.appendChild(box);
+  });
+  $("count").textContent=files.length;
+  $("next").disabled=files.length===0;
+}
+
+function add(list){
+  const seen=new Set(files.map(key));
+  for(const file of Array.from(list).filter(allowed)){
+    if(files.length>=MAX_FILES) break;
+    if(!seen.has(key(file))){ files.push(file); seen.add(key(file)); }
+  }
+  completed.clear(); render();
+}
+
+const bridge=$("bridge");
+let ready=false, seq=0;
+const pending=new Map();
+
+function configureBridge(){
+  const url=String(CFG.backendUrl||"");
+  if(!url || url.includes("PASTE_APPS_SCRIPT")){
+    return;
+  }
+  bridge.src=url+(url.includes("?")?"&":"?")+"mode=bridge&v="+Date.now();
+}
+
+window.addEventListener("message",e=>{
+  if(e.source!==bridge.contentWindow || !e.data || e.data.source!=="wedding-drive-bridge") return;
+  if(e.data.type==="ready"){ ready=true; return; }
+  const p=pending.get(e.data.id); if(!p) return;
+  pending.delete(e.data.id);
+  e.data.ok ? p.resolve(e.data.result) : p.reject(new Error(e.data.error||"Google Drive 연결 오류"));
+});
+
+function waitBridge(){
+  return new Promise((resolve,reject)=>{
+    if(ready){resolve();return;}
+    const start=Date.now();
+    const t=setInterval(()=>{
+      if(ready){clearInterval(t);resolve();}
+      else if(Date.now()-start>12000){clearInterval(t);reject(new Error("Google Drive 연결 서버에 접속하지 못했습니다."));}
+    },100);
+  });
+}
+
+async function rpc(action,payload){
+  const url=String(CFG.backendUrl||"");
+  if(!url || url.includes("PASTE_APPS_SCRIPT")) throw new Error("Apps Script 백엔드 URL이 아직 설정되지 않았습니다.");
+  await waitBridge();
+  return new Promise((resolve,reject)=>{
+    const id="rpc-"+Date.now()+"-"+(++seq);
+    pending.set(id,{resolve,reject});
+    bridge.contentWindow.postMessage({source:"wedding-github-frontend",id,action,payload:payload||{}},"*");
+    setTimeout(()=>{if(pending.has(id)){pending.delete(id);reject(new Error("서버 응답 시간이 초과되었습니다."));}},30000);
+  });
+}
+
+function putChunk(uploadUrl,blob,start,total,type,onProgress){
+  return new Promise((resolve,reject)=>{
+    const xhr=new XMLHttpRequest();
+    xhr.open("PUT",uploadUrl,true);
+    xhr.setRequestHeader("Content-Type",type);
+    xhr.setRequestHeader("Content-Range","bytes "+start+"-"+(start+blob.size-1)+"/"+total);
+    xhr.upload.onprogress=e=>{if(e.lengthComputable) onProgress(e.loaded);};
+    xhr.onerror=()=>reject(new Error("네트워크 연결 문제로 업로드가 중단되었습니다."));
+    xhr.onload=()=>{
+      if(xhr.status===308){
+        let next=start+blob.size;
+        const range=xhr.getResponseHeader("Range");
+        const m=range && /bytes=0-(\d+)/.exec(range);
+        if(m) next=Number(m[1])+1;
+        resolve({done:false,next});
+      }else if(xhr.status===200||xhr.status===201){
+        let data={}; try{data=xhr.responseText?JSON.parse(xhr.responseText):{};}catch(_){}
+        resolve({done:true,next:total,file:data});
+      }else reject(new Error("Google Drive 업로드 실패 ("+xhr.status+"): "+(xhr.responseText||xhr.statusText)));
+    };
+    xhr.send(blob);
+  });
+}
+
+async function uploadOne(file,index,total,batch,guest,message,finishedBytes,totalBytes){
+  const init=await rpc("startResumableUpload",{batchId:batch,fileName:file.name,mimeType:mime(file),fileSize:file.size,guestName:guest,message});
+  if(!init||!init.uploadUrl) throw new Error("Google Drive 업로드 세션을 만들지 못했습니다.");
+
+  let start=0, meta=null;
+  while(start<file.size){
+    const end=Math.min(start+CHUNK,file.size);
+    const blob=file.slice(start,end);
+    const result=await putChunk(init.uploadUrl,blob,start,file.size,mime(file),loaded=>{
+      const current=Math.min(file.size,start+loaded);
+      const fp=file.size?Math.round(current/file.size*100):100;
+      const op=totalBytes?Math.round((finishedBytes+current)/totalBytes*100):100;
+      $("statusTitle").textContent=(index+1)+" / "+total+" 업로드 진행중";
+      $("detail").textContent=file.name+" · "+fp+"% · 전체 "+Math.min(100,op)+"%";
+      $("bar").style.width=Math.min(100,op)+"%";
+    });
+    if(result.done){meta=result.file||{};start=file.size;} else start=Number(result.next)||end;
+  }
+  if(!meta||!meta.id) throw new Error("업로드된 파일 ID를 확인하지 못했습니다.");
+  await rpc("logDirectUploadComplete",{batchId:batch,guestName:guest,message,fileId:meta.id});
+}
+
+async function send(){
+  if(!files.length) return;
+  uploading=true;
+  $("send").disabled=true; $("send").textContent="업로드 중...";
+  $("status").style.display="block"; $("barWrap").style.display="block"; $("bar").style.width="0%";
+  const guest=$("guest").value.trim(), message=$("message").value.trim();
+  const batch=Date.now()+"-"+Math.random().toString(36).slice(2,10);
+  const totalBytes=files.reduce((a,f)=>a+f.size,0);
+  let finished=0;
+  $("statusTitle").textContent="0 / "+files.length+" 업로드 준비중";
+  $("detail").textContent="전체 용량 "+sizeText(totalBytes)+" · 고속 업로드";
+
+  try{
+    for(let i=0;i<files.length;i++){
+      const file=files[i], k=key(file);
+      if(completed.has(k)){finished+=file.size;continue;}
+      await uploadOne(file,i,files.length,batch,guest,message,finished,totalBytes);
+      completed.add(k); finished+=file.size;
+      $("statusTitle").textContent=(i+1)+" / "+files.length+" 업로드 완료";
+      $("detail").textContent=file.name+" · 완료";
+    }
+    $("bar").style.width="100%";
+    setTimeout(()=>{
+      uploading=false;$("send").disabled=false;$("send").textContent="사진 · 영상 보내기";
+      $("status").style.display="none";$("barWrap").style.display="none";show("done");
+    },350);
+  }catch(err){
+    uploading=false;$("send").disabled=false;$("send").textContent="다시 업로드하기";
+    $("statusTitle").textContent="업로드 중 오류";$("detail").textContent=err.message||String(err);
+    alert("업로드 중 오류가 발생했습니다.\n\n"+(err.message||String(err))+"\n\n완료된 파일은 다시 전송하지 않고 이어서 재시도합니다.");
+  }
+}
+
+function reset(){
+  files=[];completed=new Set();$("fileInput").value="";$("guest").value="";$("message").value="";render();show("select");
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  $("names").textContent=(CFG.groom||"고경환")+" · "+(CFG.bride||"박수진");
+  $("date").textContent=CFG.date||"2026. 10. 17";
+  $("signature").textContent=(CFG.groom||"고경환")+" & "+(CFG.bride||"박수진");
+  configureBridge();render();
+  $("open").onclick=()=>show("select");
+  $("next").onclick=()=>show("details");
+  $("send").onclick=send;$("more").onclick=reset;
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
+  $("fileInput").onchange=e=>{add(e.target.files);$("fileInput").value="";};
+});
+
+window.addEventListener("beforeunload",e=>{if(uploading){e.preventDefault();e.returnValue="";}});
+</script>
+</body>
+</html>
