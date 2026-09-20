@@ -1,5 +1,5 @@
 window.WEDDING_CONFIG = {
-  backendUrl: "PASTE_APPS_SCRIPT_EXEC_URL_HERE",
+  backendUrl: "https://script.google.com/a/macros/sunjin.com/s/AKfycbxZu4aSkC-ZbR8fXXQBp_kPj-poppv8Eso3OcsN4-7_o1esEVLS1PgzzA5y_Zsco3nidg/exec",
   groom: "고경환",
   bride: "박수진",
   date: "2026. 10. 17",
