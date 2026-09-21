@@ -277,17 +277,37 @@ function isGoogleRpcOrigin(origin){
 
 window.addEventListener("message",e=>{
   if(!isGoogleRpcOrigin(e.origin) || !e.data || e.data.source!=="wedding-upload-rpc") return;
+
   const p=pending.get(e.data.id);
   if(!p) return;
 
   pending.delete(e.data.id);
   clearTimeout(p.timer);
-  try{ p.frame.remove(); }catch(_){}
+
+  try{ if(p.frame) p.frame.remove(); }catch(_){}
+  try{ if(p.form) p.form.remove(); }catch(_){}
 
   e.data.ok
     ? p.resolve(e.data.result)
     : p.reject(new Error(e.data.error||"Google Drive 연결 오류"));
 });
+
+function createRpcFrame(id){
+  const frame=document.createElement("iframe");
+  frame.name="wedding_rpc_"+id.replace(/[^a-zA-Z0-9_-]/g,"_");
+  frame.setAttribute("aria-hidden","true");
+  frame.tabIndex=-1;
+  frame.style.position="fixed";
+  frame.style.width="1px";
+  frame.style.height="1px";
+  frame.style.opacity="0";
+  frame.style.pointerEvents="none";
+  frame.style.border="0";
+  frame.style.left="-9999px";
+  frame.style.top="-9999px";
+  document.body.appendChild(frame);
+  return frame;
+}
 
 function rpc(action,payload){
   const url=String(CFG.backendUrl||"");
@@ -307,77 +327,143 @@ function rpc(action,payload){
       }
     });
 
-    const frame=document.createElement("iframe");
-    frame.setAttribute("aria-hidden","true");
-    frame.tabIndex=-1;
-    frame.style.position="fixed";
-    frame.style.width="1px";
-    frame.style.height="1px";
-    frame.style.opacity="0";
-    frame.style.pointerEvents="none";
-    frame.style.border="0";
-    frame.style.left="-9999px";
-    frame.style.top="-9999px";
+    const frame=createRpcFrame(id);
 
     const timer=setTimeout(()=>{
       if(pending.has(id)){
         pending.delete(id);
         try{frame.remove();}catch(_){}
-        reject(new Error("Google Drive 연결 서버 응답 시간이 초과되었습니다. Apps Script 배포가 '모든 사용자'로 공개되어 있는지 확인해주세요."));
+        reject(new Error("Google Drive 연결 서버 응답 시간이 초과되었습니다."));
       }
-    },20000);
+    },30000);
 
     pending.set(id,{resolve,reject,frame,timer});
-
     frame.src=url+(url.includes("?")?"&":"?")+params.toString();
-    document.body.appendChild(frame);
   });
 }
 
-function putChunk(uploadUrl,blob,start,total,type,onProgress){
+function rpcPost(action,payload){
+  const url=String(CFG.backendUrl||"");
+  if(!url || url.includes("PASTE_")){
+    return Promise.reject(new Error("Apps Script 백엔드 URL이 아직 설정되지 않았습니다."));
+  }
+
   return new Promise((resolve,reject)=>{
-    const xhr=new XMLHttpRequest();
-    xhr.open("PUT",uploadUrl,true);
-    xhr.setRequestHeader("Content-Type",type);
-    xhr.setRequestHeader("Content-Range","bytes "+start+"-"+(start+blob.size-1)+"/"+total);
-    xhr.upload.onprogress=e=>{if(e.lengthComputable) onProgress(e.loaded);};
-    xhr.onerror=()=>reject(new Error("네트워크 연결 문제로 업로드가 중단되었습니다."));
-    xhr.onload=()=>{
-      if(xhr.status===308){
-        let next=start+blob.size;
-        const range=xhr.getResponseHeader("Range");
-        const m=range && /bytes=0-(\d+)/.exec(range);
-        if(m) next=Number(m[1])+1;
-        resolve({done:false,next});
-      }else if(xhr.status===200||xhr.status===201){
-        let data={}; try{data=xhr.responseText?JSON.parse(xhr.responseText):{};}catch(_){}
-        resolve({done:true,next:total,file:data});
-      }else reject(new Error("Google Drive 업로드 실패 ("+xhr.status+"): "+(xhr.responseText||xhr.statusText)));
+    const id="post-"+Date.now()+"-"+(++seq);
+    const frame=createRpcFrame(id);
+    const form=document.createElement("form");
+
+    form.method="POST";
+    form.action=url;
+    form.target=frame.name;
+    form.enctype="application/x-www-form-urlencoded";
+    form.style.display="none";
+
+    const fields=Object.assign({},payload||{},{
+      action,
+      requestId:id
+    });
+
+    Object.entries(fields).forEach(([name,value])=>{
+      if(value===undefined || value===null) return;
+      const input=document.createElement("textarea");
+      input.name=name;
+      input.value=String(value);
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+
+    const timer=setTimeout(()=>{
+      if(pending.has(id)){
+        pending.delete(id);
+        try{form.remove();}catch(_){}
+        try{frame.remove();}catch(_){}
+        reject(new Error("파일 전송 서버 응답 시간이 초과되었습니다."));
+      }
+    },90000);
+
+    pending.set(id,{resolve,reject,frame,form,timer});
+    form.submit();
+  });
+}
+
+function blobToBase64(blob){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error("선택한 파일을 읽지 못했습니다."));
+    reader.onload=()=>{
+      const text=String(reader.result||"");
+      const comma=text.indexOf(",");
+      resolve(comma>=0 ? text.slice(comma+1) : text);
     };
-    xhr.send(blob);
+    reader.readAsDataURL(blob);
   });
 }
 
 async function uploadOne(file,index,total,batch,guest,message,finishedBytes,totalBytes){
-  const init=await rpc("startResumableUpload",{batchId:batch,fileName:file.name,mimeType:mime(file),fileSize:file.size,guestName:guest,message});
-  if(!init||!init.uploadUrl) throw new Error("Google Drive 업로드 세션을 만들지 못했습니다.");
+  const init=await rpc("startResumableUpload",{
+    fileName:file.name,
+    mimeType:mime(file),
+    fileSize:file.size
+  });
 
-  let start=0, meta=null;
+  if(!init||!init.uploadUrl){
+    throw new Error("Google Drive 업로드 세션을 만들지 못했습니다.");
+  }
+
+  let start=0;
+  let retryCount=0;
+
   while(start<file.size){
     const end=Math.min(start+CHUNK,file.size);
     const blob=file.slice(start,end);
-    const result=await putChunk(init.uploadUrl,blob,start,file.size,mime(file),loaded=>{
-      const current=Math.min(file.size,start+loaded);
-      const fp=file.size?Math.round(current/file.size*100):100;
-      const op=totalBytes?Math.round((finishedBytes+current)/totalBytes*100):100;
-      $("statusTitle").textContent=(index+1)+" / "+total+" 업로드 진행중";
-      $("detail").textContent=file.name+" · "+fp+"% · 전체 "+Math.min(100,op)+"%";
-      $("bar").style.width=Math.min(100,op)+"%";
+
+    $("statusTitle").textContent=(index+1)+" / "+total+" 업로드 진행중";
+    $("detail").textContent=file.name+" · "+Math.round(start/file.size*100)+"% · 전송 중";
+
+    const chunkBase64=await blobToBase64(blob);
+
+    const result=await rpcPost("uploadChunk",{
+      uploadUrl:init.uploadUrl,
+      start,
+      total:file.size,
+      mimeType:mime(file),
+      chunkBase64,
+      batchId:batch,
+      guestName:guest,
+      message,
+      fileName:file.name
     });
-    if(result.done){meta=result.file||{};start=file.size;} else start=Number(result.next)||end;
+
+    if(!result){
+      throw new Error("업로드 서버 응답이 없습니다.");
+    }
+
+    if(result.done){
+      start=file.size;
+    }else{
+      const next=Number(result.next);
+      if(!Number.isFinite(next) || next<0){
+        throw new Error("다음 업로드 위치를 확인하지 못했습니다.");
+      }
+
+      if(next<=start){
+        retryCount+=1;
+        if(retryCount>=3){
+          throw new Error("일부 데이터가 Google Drive에 반영되지 않아 업로드를 중단했습니다.");
+        }
+      }else{
+        retryCount=0;
+        start=next;
+      }
+    }
+
+    const fp=file.size?Math.round(start/file.size*100):100;
+    const op=totalBytes?Math.round((finishedBytes+Math.min(start,file.size))/totalBytes*100):100;
+    $("detail").textContent=file.name+" · "+Math.min(100,fp)+"% · 전체 "+Math.min(100,op)+"%";
+    $("bar").style.width=Math.min(100,op)+"%";
   }
-  if(!meta||!meta.id) throw new Error("업로드된 파일 ID를 확인하지 못했습니다.");
-  await rpc("logDirectUploadComplete",{batchId:batch,guestName:guest,message,fileId:meta.id});
 }
 
 async function send(){
@@ -390,7 +476,7 @@ async function send(){
   const totalBytes=files.reduce((a,f)=>a+f.size,0);
   let finished=0;
   $("statusTitle").textContent="0 / "+files.length+" 업로드 준비중";
-  $("detail").textContent="전체 용량 "+sizeText(totalBytes)+" · 고속 업로드";
+  $("detail").textContent="전체 용량 "+sizeText(totalBytes)+" · 안정 업로드";
 
   try{
     for(let i=0;i<files.length;i++){
