@@ -6,13 +6,21 @@ window.WEDDING_CONFIG = {
   maxFiles: 50,
 
   directUpload: true,
-  directIosChunkSizeMb: 16,
-  directDefaultChunkSizeMb: 32,
+
+  iosSingleRequestMb: 32,
+  singleRequestMb: 64,
+
+  directIosChunkSizeMb: 32,
+  directDefaultChunkSizeMb: 64,
   directSlowChunkSizeMb: 8,
 
   relayIosChunkSizeMb: 4,
   relayDefaultChunkSizeMb: 8,
   slowChunkSizeMb: 2,
 
-  maxParallel: 2
+  iosPhotoParallel: 3,
+  photoParallel: 4,
+  iosVideoParallel: 1,
+  videoParallel: 2,
+  largeFileMb: 80
 };
