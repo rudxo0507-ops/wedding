@@ -4,5 +4,8 @@ window.WEDDING_CONFIG = {
   bride: "박수진",
   date: "2026. 10. 17",
   maxFiles: 50,
-  chunkSizeMb: 2
+  iosChunkSizeMb: 4,
+  defaultChunkSizeMb: 8,
+  slowChunkSizeMb: 2,
+  maxParallel: 2
 };
