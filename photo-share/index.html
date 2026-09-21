@@ -216,7 +216,36 @@
 
 const CFG = window.WEDDING_CONFIG || {};
 const MAX_FILES = Number(CFG.maxFiles || 50);
-const CHUNK = Number(CFG.chunkSizeMb || 32) * 1024 * 1024;
+const MB = 1024 * 1024;
+
+function isIOSLike(){
+  const ua=navigator.userAgent||"";
+  const platform=navigator.platform||"";
+  return /iPhone|iPad|iPod/i.test(ua) ||
+    (platform==="MacIntel" && navigator.maxTouchPoints>1);
+}
+
+function networkInfo(){
+  return navigator.connection || navigator.mozConnection || navigator.webkitConnection || null;
+}
+
+function isSlowNetwork(){
+  const c=networkInfo();
+  if(!c) return false;
+  return !!c.saveData || c.effectiveType==="slow-2g" || c.effectiveType==="2g";
+}
+
+function getChunkSize(){
+  if(isSlowNetwork()) return Number(CFG.slowChunkSizeMb || 2) * MB;
+  if(isIOSLike()) return Number(CFG.iosChunkSizeMb || 4) * MB;
+  return Number(CFG.defaultChunkSizeMb || 8) * MB;
+}
+
+function getParallelCount(){
+  if(isSlowNetwork()) return 1;
+  return Math.max(1, Math.min(2, Number(CFG.maxParallel || 2)));
+}
+
 let files = [];
 let completed = new Set();
 let uploading = false;
@@ -401,40 +430,68 @@ function blobToBase64(blob){
   });
 }
 
-async function uploadOne(file,index,total,batch,guest,message,finishedBytes,totalBytes){
-  const init=await rpc("startResumableUpload",{
-    fileName:file.name,
-    mimeType:mime(file),
-    fileSize:file.size
-  });
+function sleep(ms){
+  return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
+async function withRetry(fn,maxAttempts,label){
+  let lastError=null;
+  for(let attempt=1;attempt<=maxAttempts;attempt++){
+    try{
+      return await fn(attempt);
+    }catch(err){
+      lastError=err;
+      if(attempt>=maxAttempts) break;
+      $("detail").textContent=(label||"업로드")+" · 재시도 "+attempt+"/"+(maxAttempts-1);
+      await sleep(Math.min(4000,700*Math.pow(2,attempt-1)));
+    }
+  }
+  throw lastError || new Error((label||"업로드")+" 실패");
+}
+
+async function uploadOne(file,index,total,batch,guest,message,onProgress){
+  const chunkSize=getChunkSize();
+
+  const init=await withRetry(
+    ()=>rpc("startResumableUpload",{
+      fileName:file.name,
+      mimeType:mime(file),
+      fileSize:file.size
+    }),
+    3,
+    "업로드 준비"
+  );
 
   if(!init||!init.uploadUrl){
     throw new Error("Google Drive 업로드 세션을 만들지 못했습니다.");
   }
 
   let start=0;
-  let retryCount=0;
+  let stagnantCount=0;
 
   while(start<file.size){
-    const end=Math.min(start+CHUNK,file.size);
+    const end=Math.min(start+chunkSize,file.size);
     const blob=file.slice(start,end);
 
-    $("statusTitle").textContent=(index+1)+" / "+total+" 업로드 진행중";
-    $("detail").textContent=file.name+" · "+Math.round(start/file.size*100)+"% · 전송 중";
+    onProgress(start,file.name);
 
     const chunkBase64=await blobToBase64(blob);
 
-    const result=await rpcPost("uploadChunk",{
-      uploadUrl:init.uploadUrl,
-      start,
-      total:file.size,
-      mimeType:mime(file),
-      chunkBase64,
-      batchId:batch,
-      guestName:guest,
-      message,
-      fileName:file.name
-    });
+    const result=await withRetry(
+      ()=>rpcPost("uploadChunk",{
+        uploadUrl:init.uploadUrl,
+        start,
+        total:file.size,
+        mimeType:mime(file),
+        chunkBase64,
+        batchId:batch,
+        guestName:guest,
+        message,
+        fileName:file.name
+      }),
+      3,
+      file.name
+    );
 
     if(!result){
       throw new Error("업로드 서버 응답이 없습니다.");
@@ -444,58 +501,139 @@ async function uploadOne(file,index,total,batch,guest,message,finishedBytes,tota
       start=file.size;
     }else{
       const next=Number(result.next);
-      if(!Number.isFinite(next) || next<0){
+
+      if(!Number.isFinite(next) || next<0 || next>file.size){
         throw new Error("다음 업로드 위치를 확인하지 못했습니다.");
       }
 
       if(next<=start){
-        retryCount+=1;
-        if(retryCount>=3){
-          throw new Error("일부 데이터가 Google Drive에 반영되지 않아 업로드를 중단했습니다.");
+        stagnantCount+=1;
+        if(stagnantCount>=3){
+          throw new Error("업로드 위치가 갱신되지 않아 중단했습니다.");
         }
       }else{
-        retryCount=0;
-        start=next;
+        stagnantCount=0;
       }
+
+      start=next;
     }
 
-    const fp=file.size?Math.round(start/file.size*100):100;
-    const op=totalBytes?Math.round((finishedBytes+Math.min(start,file.size))/totalBytes*100):100;
-    $("detail").textContent=file.name+" · "+Math.min(100,fp)+"% · 전체 "+Math.min(100,op)+"%";
-    $("bar").style.width=Math.min(100,op)+"%";
+    onProgress(start,file.name);
   }
+
+  return true;
 }
 
 async function send(){
   if(!files.length) return;
+
   uploading=true;
-  $("send").disabled=true; $("send").textContent="업로드 중...";
-  $("status").style.display="block"; $("barWrap").style.display="block"; $("bar").style.width="0%";
-  const guest=$("guest").value.trim(), message=$("message").value.trim();
+  $("send").disabled=true;
+  $("send").textContent="업로드 중...";
+  $("status").style.display="block";
+  $("barWrap").style.display="block";
+  $("bar").style.width="0%";
+
+  const guest=$("guest").value.trim();
+  const message=$("message").value.trim();
   const batch=Date.now()+"-"+Math.random().toString(36).slice(2,10);
   const totalBytes=files.reduce((a,f)=>a+f.size,0);
-  let finished=0;
-  $("statusTitle").textContent="0 / "+files.length+" 업로드 준비중";
-  $("detail").textContent="전체 용량 "+sizeText(totalBytes)+" · 안정 업로드";
+  const progress=files.map(f=>completed.has(key(f))?f.size:0);
+  let doneCount=files.filter(f=>completed.has(key(f))).length;
+  let nextIndex=0;
+  let firstError=null;
+  let activeCount=0;
+
+  function updateProgress(index,value,fileName){
+    progress[index]=Math.max(progress[index]||0,Math.min(files[index].size,value));
+    const uploaded=progress.reduce((a,b)=>a+b,0);
+    const overall=totalBytes?Math.round(uploaded/totalBytes*100):100;
+    $("statusTitle").textContent=doneCount+" / "+files.length+" 완료 · "+activeCount+"개 업로드 중";
+    $("detail").textContent=(fileName||"전송 중")+" · 전체 "+Math.min(100,overall)+"%";
+    $("bar").style.width=Math.min(100,overall)+"%";
+  }
+
+  async function worker(){
+    while(true){
+      if(firstError) return;
+
+      let i=-1;
+      while(nextIndex<files.length){
+        const candidate=nextIndex++;
+        if(!completed.has(key(files[candidate]))){
+          i=candidate;
+          break;
+        }
+      }
+
+      if(i<0) return;
+
+      const file=files[i];
+      activeCount+=1;
+      updateProgress(i,progress[i],file.name);
+
+      try{
+        await uploadOne(
+          file,
+          i,
+          files.length,
+          batch,
+          guest,
+          message,
+          (value,name)=>updateProgress(i,value,name)
+        );
+
+        completed.add(key(file));
+        progress[i]=file.size;
+        doneCount+=1;
+        activeCount-=1;
+        updateProgress(i,file.size,file.name+" · 완료");
+      }catch(err){
+        activeCount=Math.max(0,activeCount-1);
+        firstError=err;
+        return;
+      }
+    }
+  }
 
   try{
-    for(let i=0;i<files.length;i++){
-      const file=files[i], k=key(file);
-      if(completed.has(k)){finished+=file.size;continue;}
-      await uploadOne(file,i,files.length,batch,guest,message,finished,totalBytes);
-      completed.add(k); finished+=file.size;
-      $("statusTitle").textContent=(i+1)+" / "+files.length+" 업로드 완료";
-      $("detail").textContent=file.name+" · 완료";
-    }
+    const parallel=Math.min(getParallelCount(),files.length);
+    $("statusTitle").textContent=doneCount+" / "+files.length+" 완료 · "+parallel+"개 업로드 준비";
+    $("detail").textContent=
+      "전체 "+sizeText(totalBytes)+
+      " · "+(getChunkSize()/MB)+"MB 청크 · "+parallel+"개 병렬";
+
+    await Promise.all(
+      Array.from({length:parallel},()=>worker())
+    );
+
+    if(firstError) throw firstError;
+
     $("bar").style.width="100%";
+    $("statusTitle").textContent=files.length+" / "+files.length+" 업로드 완료";
+    $("detail").textContent="모든 파일 업로드 완료";
+
     setTimeout(()=>{
-      uploading=false;$("send").disabled=false;$("send").textContent="사진 · 영상 보내기";
-      $("status").style.display="none";$("barWrap").style.display="none";show("done");
+      uploading=false;
+      $("send").disabled=false;
+      $("send").textContent="사진 · 영상 보내기";
+      $("status").style.display="none";
+      $("barWrap").style.display="none";
+      show("done");
     },350);
+
   }catch(err){
-    uploading=false;$("send").disabled=false;$("send").textContent="다시 업로드하기";
-    $("statusTitle").textContent="업로드 중 오류";$("detail").textContent=err.message||String(err);
-    alert("업로드 중 오류가 발생했습니다.\n\n"+(err.message||String(err))+"\n\n완료된 파일은 다시 전송하지 않고 이어서 재시도합니다.");
+    uploading=false;
+    $("send").disabled=false;
+    $("send").textContent="다시 업로드하기";
+    $("statusTitle").textContent="업로드 중 오류";
+    $("detail").textContent=err.message||String(err);
+
+    alert(
+      "업로드 중 오류가 발생했습니다.\n\n"+
+      (err.message||String(err))+
+      "\n\n완료된 파일은 다시 전송하지 않고 이어서 재시도합니다."
+    );
   }
 }
 
