@@ -248,9 +248,38 @@ function getDirectChunkSize(){
   return Number(CFG.directDefaultChunkSizeMb || 32) * MB;
 }
 
-function getParallelCount(){
+function getParallelCount(selectedFiles){
   if(isSlowNetwork()) return 1;
-  return Math.max(1, Math.min(2, Number(CFG.maxParallel || 2)));
+
+  const list=Array.isArray(selectedFiles)?selectedFiles:[];
+  const hasVideo=list.some(f=>String(f.type||"").startsWith("video/"));
+  const hasLarge=list.some(f=>Number(f.size||0) > Number(CFG.largeFileMb || 80) * MB);
+
+  if(hasVideo || hasLarge){
+    return Math.max(
+      1,
+      Math.min(
+        2,
+        Number(
+          isIOSLike()
+            ? (CFG.iosVideoParallel || 1)
+            : (CFG.videoParallel || 2)
+        )
+      )
+    );
+  }
+
+  return Math.max(
+    1,
+    Math.min(
+      4,
+      Number(
+        isIOSLike()
+          ? (CFG.iosPhotoParallel || 3)
+          : (CFG.photoParallel || 4)
+      )
+    )
+  );
 }
 
 function shouldTryDirect(){
@@ -464,7 +493,7 @@ function putDirectChunk(uploadUrl,blob,start,total,type,onProgress){
   return new Promise((resolve,reject)=>{
     const xhr=new XMLHttpRequest();
     xhr.open("PUT",uploadUrl,true);
-    xhr.timeout=120000;
+    xhr.timeout=240000;
     xhr.setRequestHeader("Content-Type",type);
     xhr.setRequestHeader("Content-Range","bytes "+start+"-"+(start+blob.size-1)+"/"+total);
 
@@ -555,7 +584,16 @@ async function uploadOne(file,index,total,batch,guest,message,onProgress){
   let useRelay=!shouldTryDirect();
 
   if(!useRelay){
-    const directChunkSize=getDirectChunkSize();
+    const baseDirectChunkSize=getDirectChunkSize();
+    const oneRequestLimit=Number(
+      isIOSLike()
+        ? (CFG.iosSingleRequestMb || 32)
+        : (CFG.singleRequestMb || 64)
+    ) * MB;
+    const directChunkSize=
+      file.size<=oneRequestLimit
+        ? file.size
+        : baseDirectChunkSize;
 
     try{
       while(start<file.size){
@@ -745,11 +783,11 @@ async function send(){
   }
 
   try{
-    const parallel=Math.min(getParallelCount(),files.length);
+    const parallel=Math.min(getParallelCount(files),files.length);
     $("statusTitle").textContent=doneCount+" / "+files.length+" 완료 · "+parallel+"개 업로드 준비";
     $("detail").textContent=
       "전체 "+sizeText(totalBytes)+
-      " · 빠른 직접 업로드 우선 · "+parallel+"개 병렬";
+      " · 터보 직접 업로드 · "+parallel+"개 병렬";
 
     await Promise.all(
       Array.from({length:parallel},()=>worker())
