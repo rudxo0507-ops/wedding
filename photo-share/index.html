@@ -217,6 +217,7 @@
 const CFG = window.WEDDING_CONFIG || {};
 const MAX_FILES = Number(CFG.maxFiles || 50);
 const MB = 1024 * 1024;
+let directDisabledForSession = false;
 
 function isIOSLike(){
   const ua=navigator.userAgent||"";
@@ -235,15 +236,25 @@ function isSlowNetwork(){
   return !!c.saveData || c.effectiveType==="slow-2g" || c.effectiveType==="2g";
 }
 
-function getChunkSize(){
+function getRelayChunkSize(){
   if(isSlowNetwork()) return Number(CFG.slowChunkSizeMb || 2) * MB;
-  if(isIOSLike()) return Number(CFG.iosChunkSizeMb || 4) * MB;
-  return Number(CFG.defaultChunkSizeMb || 8) * MB;
+  if(isIOSLike()) return Number(CFG.relayIosChunkSizeMb || 4) * MB;
+  return Number(CFG.relayDefaultChunkSizeMb || 8) * MB;
+}
+
+function getDirectChunkSize(){
+  if(isSlowNetwork()) return Number(CFG.directSlowChunkSizeMb || 8) * MB;
+  if(isIOSLike()) return Number(CFG.directIosChunkSizeMb || 16) * MB;
+  return Number(CFG.directDefaultChunkSizeMb || 32) * MB;
 }
 
 function getParallelCount(){
   if(isSlowNetwork()) return 1;
   return Math.max(1, Math.min(2, Number(CFG.maxParallel || 2)));
+}
+
+function shouldTryDirect(){
+  return CFG.directUpload !== false && !directDisabledForSession;
 }
 
 let files = [];
@@ -449,9 +460,83 @@ async function withRetry(fn,maxAttempts,label){
   throw lastError || new Error((label||"업로드")+" 실패");
 }
 
-async function uploadOne(file,index,total,batch,guest,message,onProgress){
-  const chunkSize=getChunkSize();
+function putDirectChunk(uploadUrl,blob,start,total,type,onProgress){
+  return new Promise((resolve,reject)=>{
+    const xhr=new XMLHttpRequest();
+    xhr.open("PUT",uploadUrl,true);
+    xhr.timeout=120000;
+    xhr.setRequestHeader("Content-Type",type);
+    xhr.setRequestHeader("Content-Range","bytes "+start+"-"+(start+blob.size-1)+"/"+total);
 
+    xhr.upload.onprogress=e=>{
+      if(e.lengthComputable) onProgress(e.loaded);
+    };
+
+    xhr.onerror=()=>{
+      const err=new Error("직접 업로드 연결 실패");
+      err.directFailure=true;
+      reject(err);
+    };
+
+    xhr.ontimeout=()=>{
+      const err=new Error("직접 업로드 응답 시간 초과");
+      err.directFailure=true;
+      reject(err);
+    };
+
+    xhr.onload=()=>{
+      if(xhr.status===308){
+        let next=start+blob.size;
+        const range=xhr.getResponseHeader("Range");
+        const m=range && /bytes=0-(\d+)/.exec(range);
+        if(m) next=Number(m[1])+1;
+        resolve({done:false,next,file:null});
+        return;
+      }
+
+      if(xhr.status===200 || xhr.status===201){
+        let file={};
+        try{file=xhr.responseText?JSON.parse(xhr.responseText):{};}catch(_){}
+        resolve({done:true,next:total,file});
+        return;
+      }
+
+      const err=new Error("직접 업로드 실패 ("+xhr.status+"): "+(xhr.responseText||xhr.statusText||""));
+      err.directFailure=true;
+      reject(err);
+    };
+
+    xhr.send(blob);
+  });
+}
+
+async function queryUploadStatus(uploadUrl,total){
+  return withRetry(
+    ()=>rpcPost("queryUploadStatus",{uploadUrl,total}),
+    3,
+    "업로드 상태 확인"
+  );
+}
+
+async function logCompletedDirectFile(fileMeta,batch,guest,message){
+  if(!fileMeta || !fileMeta.id){
+    throw new Error("업로드된 파일 ID를 확인하지 못했습니다.");
+  }
+
+  await withRetry(
+    ()=>rpcPost("logDirectUploadComplete",{
+      batchId:batch,
+      guestName:guest,
+      message,
+      fileId:fileMeta.id
+    }),
+    3,
+    "업로드 기록"
+  );
+}
+
+
+async function uploadOne(file,index,total,batch,guest,message,onProgress){
   const init=await withRetry(
     ()=>rpc("startResumableUpload",{
       fileName:file.name,
@@ -467,13 +552,76 @@ async function uploadOne(file,index,total,batch,guest,message,onProgress){
   }
 
   let start=0;
+  let useRelay=!shouldTryDirect();
+
+  if(!useRelay){
+    const directChunkSize=getDirectChunkSize();
+
+    try{
+      while(start<file.size){
+        const end=Math.min(start+directChunkSize,file.size);
+        const blob=file.slice(start,end);
+
+        const result=await putDirectChunk(
+          init.uploadUrl,
+          blob,
+          start,
+          file.size,
+          mime(file),
+          loaded=>onProgress(Math.min(file.size,start+loaded),file.name+" · 직접 업로드")
+        );
+
+        if(result.done){
+          await logCompletedDirectFile(result.file,batch,guest,message);
+          onProgress(file.size,file.name+" · 완료");
+          return true;
+        }
+
+        start=Number(result.next);
+        if(!Number.isFinite(start) || start<0 || start>file.size){
+          throw new Error("직접 업로드 위치를 확인하지 못했습니다.");
+        }
+
+        onProgress(start,file.name+" · 직접 업로드");
+      }
+
+      return true;
+
+    }catch(err){
+      directDisabledForSession=true;
+      useRelay=true;
+      $("detail").textContent=file.name+" · 안정 모드로 자동 전환";
+
+      try{
+        const status=await queryUploadStatus(init.uploadUrl,file.size);
+
+        if(status && status.done){
+          if(status.file && status.file.id){
+            await logCompletedDirectFile(status.file,batch,guest,message);
+          }
+          onProgress(file.size,file.name+" · 완료");
+          return true;
+        }
+
+        if(status && Number.isFinite(Number(status.next))){
+          start=Math.max(0,Math.min(file.size,Number(status.next)));
+        }else{
+          start=0;
+        }
+      }catch(_){
+        start=0;
+      }
+    }
+  }
+
+  const relayChunkSize=getRelayChunkSize();
   let stagnantCount=0;
 
   while(start<file.size){
-    const end=Math.min(start+chunkSize,file.size);
+    const end=Math.min(start+relayChunkSize,file.size);
     const blob=file.slice(start,end);
 
-    onProgress(start,file.name);
+    onProgress(start,file.name+" · 안정 업로드");
 
     const chunkBase64=await blobToBase64(blob);
 
@@ -518,7 +666,7 @@ async function uploadOne(file,index,total,batch,guest,message,onProgress){
       start=next;
     }
 
-    onProgress(start,file.name);
+    onProgress(start,file.name+" · 안정 업로드");
   }
 
   return true;
@@ -601,7 +749,7 @@ async function send(){
     $("statusTitle").textContent=doneCount+" / "+files.length+" 완료 · "+parallel+"개 업로드 준비";
     $("detail").textContent=
       "전체 "+sizeText(totalBytes)+
-      " · "+(getChunkSize()/MB)+"MB 청크 · "+parallel+"개 병렬";
+      " · 빠른 직접 업로드 우선 · "+parallel+"개 병렬";
 
     await Promise.all(
       Array.from({length:parallel},()=>worker())
